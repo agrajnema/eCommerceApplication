@@ -1,0 +1,17 @@
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1 as build
+WORKDIR /build
+
+# Copy necessary files and restore as distinct layer
+COPY ProductManagementApi/ProductManagementApi.csproj ./ProductManagementApi/
+COPY InfrastructureLibrary/InfrastructureLibrary.csproj ./InfrastructureLibrary/
+RUN dotnet restore
+
+# Copy everything else and build
+COPY . ./
+RUN dotnet publish -c Release -o output
+
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.1
+WORKDIR /app
+COPY --from=build /build/output .
+
+ENTRYPOINT [ "dotnet", "ProductManagementApi.dll"]
