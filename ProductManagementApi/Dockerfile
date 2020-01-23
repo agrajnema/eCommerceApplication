@@ -4,10 +4,8 @@ EXPOSE 443
 WORKDIR /build
 
 # Copy necessary files and restore as distinct layer
-#COPY "eCommerceApplication.sln" "eCommerceApplication.sln"
 COPY "ProductManagementApi/ProductManagementApi.csproj" "ProductManagementApi/ProductManagementApi.csproj"
 COPY "InfrastructureLibrary/InfrastructureLibrary.csproj" "InfrastructureLibrary/InfrastructureLibrary.csproj"
-#COPY *.csproj ./
 RUN dotnet restore "ProductManagementApi/ProductManagementApi.csproj"
 RUN dotnet restore "InfrastructureLibrary/InfrastructureLibrary.csproj"
 

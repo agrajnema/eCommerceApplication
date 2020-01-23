@@ -14,6 +14,7 @@ using Microsoft.OpenApi.Models;
 using ProductManagementApi.Filters;
 using ProductManagementApi.Repository;
 using ProductManagementApi.Models;
+using InfrastructureLibrary;
 
 namespace ProductManagementApi
 {
@@ -30,6 +31,7 @@ namespace ProductManagementApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            AddRabbitMQ(services);
 
             //services.AddMvc(options =>
             //{
@@ -76,6 +78,17 @@ namespace ProductManagementApi
             var database = _configuration["Database"] ?? "ProductDB";
             var connectionString = $"Server={server},{port};Initial Catalog={database};User ID={user};Password={password}";
             return connectionString;
+        }
+
+        private void AddRabbitMQ(IServiceCollection services)
+        {
+            var rabbitMQConfigSection = _configuration.GetSection("RabbitMQ");
+            var userName = rabbitMQConfigSection["UserName"];
+            var password = rabbitMQConfigSection["Password"];
+            var host = rabbitMQConfigSection["Host"];
+            var exchangeName = rabbitMQConfigSection["ExchangeName"];
+            var exchangeType = rabbitMQConfigSection["ExchangeType"];
+            services.AddTransient<IMessagePublisher>((mp) => new RabbitMQMessagePublisher(host, userName, password, exchangeName, exchangeType));
         }
     }
 }

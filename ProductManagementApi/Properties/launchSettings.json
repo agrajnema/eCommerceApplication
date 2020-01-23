@@ -3,8 +3,8 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:50765",
-      "sslPort": 0
+      "applicationUrl": "http://localhost:50768",
+      "sslPort": 44313
     }
   },
   "profiles": {
@@ -34,6 +34,10 @@
       "httpPort": 50766,
       "useSSL": true,
       "sslPort": 44387
+    },
+    "Azure Dev Spaces": {
+      "commandName": "AzureDevSpaces",
+      "launchBrowser": true
     }
   }
 }

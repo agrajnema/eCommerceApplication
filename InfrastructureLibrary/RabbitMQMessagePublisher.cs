@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
+using Polly;
 
 namespace InfrastructureLibrary
 {
@@ -16,7 +17,7 @@ namespace InfrastructureLibrary
         private readonly string _exchangeType;
 
         public RabbitMQMessagePublisher(string host, string userName, string password, string exchangeName, string exchangeType)
-            :this(new List<string>() { host}, userName, password, exchangeName, exchangeType)
+            : this(new List<string>() { host }, userName, password, exchangeName, exchangeType)
 
         {
             _hosts = new List<string> { host };
@@ -38,21 +39,26 @@ namespace InfrastructureLibrary
         public Task PublishMessageAsync(string messageType, object message, string routingKey)
         {
             return Task.Run(() =>
-            {
-                var factory = new ConnectionFactory() { UserName = _userName, Password = _password };
-                using (var connection = factory.CreateConnection(_hosts))
-                {
-                    using (var model = connection.CreateModel())
-                    {
-                        model.ExchangeDeclare(_exchangeName, _exchangeType, durable: true, autoDelete: false);
-                        var serializedData = JsonConvert.SerializeObject(message);
-                        var binaryBody = Encoding.UTF8.GetBytes(serializedData);
-                        var properties = model.CreateBasicProperties();
-                        properties.Headers = new Dictionary<string, object> { { "MessageType", messageType } };
-                        model.BasicPublish(_exchangeName, routingKey, properties, binaryBody);
-                    }
-                }
-            });
+                Policy
+                    .Handle<Exception>()
+                    .WaitAndRetry(10, r => TimeSpan.FromSeconds(5))
+                    .Execute(() =>
+                        {
+                            var factory = new ConnectionFactory() { UserName = _userName, Password = _password };
+                            //factory.Uri = new Uri("amqp://guest:guest@localhost:5672");
+                            using (var connection = factory.CreateConnection(_hosts))
+                            {
+                                using (var model = connection.CreateModel())
+                                {
+                                    model.ExchangeDeclare(_exchangeName, _exchangeType, durable: true, autoDelete: false);
+                                    var serializedData = JsonConvert.SerializeObject(message);
+                                    var binaryBody = Encoding.UTF8.GetBytes(serializedData);
+                                    var properties = model.CreateBasicProperties();
+                                    properties.Headers = new Dictionary<string, object> { { "MessageType", messageType } };
+                                    model.BasicPublish(_exchangeName, routingKey, properties, binaryBody);
+                                }
+                            }
+                        }));
         }
     }
 }

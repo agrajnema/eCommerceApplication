@@ -9,6 +9,7 @@ using ProductManagementApi.Models;
 using ProductManagementApi.Repository;
 using ProductManagementApi.Mappers;
 using Newtonsoft.Json;
+using InfrastructureLibrary;
 
 namespace ProductManagementApi.Controllers
 {
@@ -17,10 +18,12 @@ namespace ProductManagementApi.Controllers
     public class ProductController : ControllerBase
     {
         private readonly IProductRepository _productRepository;
+        private readonly IMessagePublisher _rabbitMQPublisher;
 
-        public ProductController(IProductRepository productRepository)
+        public ProductController(IProductRepository productRepository, IMessagePublisher rabbitMQPublisher)
         {
             _productRepository = productRepository;
+            _rabbitMQPublisher = rabbitMQPublisher;
         }
 
         [Route("product")]
@@ -48,8 +51,8 @@ namespace ProductManagementApi.Controllers
                 await _productRepository.RegisterProduct(product);
                 //publish event to RabbitMQ
                 var productEvent = productCommand.MapProductCommandToProductRegisteredEvent();
-                
-                return RedirectToAction("GetByProductId", new { productId = product.ProductId});
+                await _rabbitMQPublisher.PublishMessageAsync(productEvent.MessageType, productEvent, "");
+                return RedirectToAction("GetByProductId", new { id = product.ProductId});
         } 
     }
 }

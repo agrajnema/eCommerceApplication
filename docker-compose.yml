@@ -1,8 +1,25 @@
 version: '3'
 
 services:
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    volumes:
+      - rabbitmqdata:/var/lib/rabbitmq
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+  
+
   ms-sql-server:
     image: 'mcr.microsoft.com/mssql/server:2017-latest-ubuntu'
+    container_name: ms-sql-server
+    volumes:
+      - sqlserverdata:/var/opt/mssql 
     environment:
       ACCEPT_EULA: "Y"
       SA_PASSWORD: "Password@123"
@@ -20,5 +37,12 @@ services:
     ports:
       - "5100:80"
     depends_on:
+      - rabbitmq
       - ms-sql-server
-    
+  
+
+volumes:
+  rabbitmqdata:
+    external: true
+  sqlserverdata:
+    external: true
