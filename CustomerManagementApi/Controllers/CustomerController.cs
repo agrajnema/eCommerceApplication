@@ -48,6 +48,7 @@ namespace CustomerManagementApi.Controllers
             if (customer == null)
                 return BadRequest("User name or password is incorrect");
 
+            throw new NotImplementedException();
 
         }
 

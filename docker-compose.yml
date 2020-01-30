@@ -31,7 +31,7 @@ services:
     image: productmanagementapi
     build:
       context: .
-      dockerfile: ProductManagementApi/Dockerfile
+      dockerfile: Dockerfile_Product
     environment:
       DBServer: "ms-sql-server"
     ports:
@@ -39,10 +39,21 @@ services:
     depends_on:
       - rabbitmq
       - ms-sql-server
+
+  customermanagementapi:
+    image: customermanagementapi
+    build:
+      context: .
+      dockerfile: Dockerfile_Customer
+    environment:
+      DBServer: "ms-sql-server"
+    ports:
+      - "5200:80"
+    depends_on:
+      - rabbitmq
+      - ms-sql-server
   
 
 volumes:
   rabbitmqdata:
-    external: true
   sqlserverdata:
-    external: true
