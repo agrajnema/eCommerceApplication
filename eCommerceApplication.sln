@@ -5,8 +5,10 @@ VisualStudioVersion = 16.0.29418.71
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{0C78EB34-D8A9-4004-8F8B-994E9CC1F71B}"
 	ProjectSection(SolutionItems) = preProject
+		.dockerignore = .dockerignore
 		docker-compose.yml = docker-compose.yml
 		Dockerfile_Customer = Dockerfile_Customer
+		Dockerfile_Ocelot = Dockerfile_Ocelot
 		Dockerfile_Product = Dockerfile_Product
 	EndProjectSection
 EndProject
@@ -28,7 +30,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CustomerManagementApi", "Cu
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ApiGateway", "ApiGateway", "{BCC4F4D1-CF1F-437B-AD04-1449E69DE22C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OcelotApiGateway", "OcelotApiGateway\OcelotApiGateway.csproj", "{0044C894-C3DA-4412-9344-E2DE2F335405}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OcelotApiGateway", "OcelotApiGateway\OcelotApiGateway.csproj", "{73135D37-52AB-42F3-B562-5B56AB63E018}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -52,10 +54,10 @@ Global
 		{AEBA3938-D72A-4A60-B931-DF82B1EF88AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AEBA3938-D72A-4A60-B931-DF82B1EF88AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AEBA3938-D72A-4A60-B931-DF82B1EF88AE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0044C894-C3DA-4412-9344-E2DE2F335405}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0044C894-C3DA-4412-9344-E2DE2F335405}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0044C894-C3DA-4412-9344-E2DE2F335405}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0044C894-C3DA-4412-9344-E2DE2F335405}.Release|Any CPU.Build.0 = Release|Any CPU
+		{73135D37-52AB-42F3-B562-5B56AB63E018}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73135D37-52AB-42F3-B562-5B56AB63E018}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73135D37-52AB-42F3-B562-5B56AB63E018}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73135D37-52AB-42F3-B562-5B56AB63E018}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -70,7 +72,7 @@ Global
 		{F74E1220-7DE1-44A5-BFEC-D8599532B5E8} = {0C78EB34-D8A9-4004-8F8B-994E9CC1F71B}
 		{AEBA3938-D72A-4A60-B931-DF82B1EF88AE} = {F74E1220-7DE1-44A5-BFEC-D8599532B5E8}
 		{BCC4F4D1-CF1F-437B-AD04-1449E69DE22C} = {0C78EB34-D8A9-4004-8F8B-994E9CC1F71B}
-		{0044C894-C3DA-4412-9344-E2DE2F335405} = {BCC4F4D1-CF1F-437B-AD04-1449E69DE22C}
+		{73135D37-52AB-42F3-B562-5B56AB63E018} = {BCC4F4D1-CF1F-437B-AD04-1449E69DE22C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1345D665-7C36-4E48-8835-D3AF04D9A2D9}

@@ -3,8 +3,8 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:55958",
-      "sslPort": 44318
+      "applicationUrl": "http://localhost:61619",
+      "sslPort": 44396
     }
   },
   "profiles": {
@@ -29,11 +29,11 @@
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
       "environmentVariables": {
         "ASPNETCORE_URLS": "https://+:443;http://+:80",
-        "ASPNETCORE_HTTPS_PORT": "44319"
+        "ASPNETCORE_HTTPS_PORT": "44397"
       },
-      "httpPort": 55960,
+      "httpPort": 61620,
       "useSSL": true,
-      "sslPort": 44319
+      "sslPort": 44397
     }
   }
 }

@@ -8,22 +8,21 @@ using System.Threading.Tasks;
 using eCommerceWebApp.Commands;
 using eCommerceWebApp.Models;
 using Microsoft.Extensions.Configuration;
-using Refit;
 using System.Web;
 using Newtonsoft.Json;
 
 namespace eCommerceWebApp.RestClients
 {
-    public class ProductManagementApiClient : IProductManagementApiClient
+    public class ProductManagementApiClient : BaseApiClient, IProductManagementApiClient
     {
         //private readonly IProductManagementApiClient _restClient;
         private readonly HttpClient _httpClient;
 
-        public ProductManagementApiClient(IConfiguration configuration, HttpClient httpClient)
+        public ProductManagementApiClient(IConfiguration configuration, HttpClient httpClient) : base(configuration)
         {
             _httpClient = httpClient;
-            var productManagementApiAddress = configuration.GetSection("ApiAddress").GetValue<string>("ProductManagementApi");
-            _httpClient.BaseAddress = new Uri($"http://{productManagementApiAddress}/api/product/");
+            //var productManagementApiAddress = configuration.GetSection("ApiAddress").GetValue<string>("ProductManagementApi");
+            _httpClient.BaseAddress = new Uri($"http://{OcelotApiGatewayAddress}/product/");
             //_restClient = RestService.For<IProductManagementApiClient>(httpClient);
         }
         public async Task<Product> GetProductById(int id)

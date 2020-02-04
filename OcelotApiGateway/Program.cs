@@ -21,6 +21,7 @@ namespace OcelotApiGateway
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-                });
+                })
+                .ConfigureAppConfiguration(c => c.AddJsonFile("ocelot.json"));
     }
 }
