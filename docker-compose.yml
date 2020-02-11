@@ -29,39 +29,45 @@ services:
 
   ocelotapigateway:
     image: ocelotapigateway
+    container_name: ocelotapigateway
     build:
       context: .
       dockerfile: Dockerfile_Ocelot
     ports:
-      - "8000:80"
+      - "8000:8000"
+    depends_on:
+      - productmanagementapi
+      - ms-sql-server
     
   productmanagementapi:
     image: productmanagementapi
+    hostname: productmanagementapi
+    container_name: productmanagementapi
     build:
       context: .
       dockerfile: Dockerfile_Product
     environment:
       DBServer: "ms-sql-server"
     ports:
-      - "8100:80"
+      - "8100:8100"
     depends_on:
       - rabbitmq
       - ms-sql-server
 
   customermanagementapi:
     image: customermanagementapi
+    hostname: customermanagementapi
     build:
       context: .
       dockerfile: Dockerfile_Customer
     environment:
       DBServer: "ms-sql-server"
     ports:
-      - "8200:80"
+      - "8200:8200"
     depends_on:
       - rabbitmq
       - ms-sql-server
   
-
 volumes:
   rabbitmqdata:
   sqlserverdata:

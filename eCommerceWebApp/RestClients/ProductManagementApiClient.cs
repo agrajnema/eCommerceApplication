@@ -21,9 +21,7 @@ namespace eCommerceWebApp.RestClients
         public ProductManagementApiClient(IConfiguration configuration, HttpClient httpClient) : base(configuration)
         {
             _httpClient = httpClient;
-            //var productManagementApiAddress = configuration.GetSection("ApiAddress").GetValue<string>("ProductManagementApi");
             _httpClient.BaseAddress = new Uri($"http://{OcelotApiGatewayAddress}/product/");
-            //_restClient = RestService.For<IProductManagementApiClient>(httpClient);
         }
         public async Task<Product> GetProductById(int id)
         {
@@ -36,11 +34,18 @@ namespace eCommerceWebApp.RestClients
 
         public async Task<List<Product>> GetProducts()
         {
-            var productsResponse = await _httpClient.GetAsync("product");
-            if (!productsResponse.IsSuccessStatusCode)
-                throw new Exception("Could not retrieve the Products");
-            var content = await productsResponse.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<List<Product>>(content);
+            try
+            {
+                var productsResponse = await _httpClient.GetAsync("product");
+                if (!productsResponse.IsSuccessStatusCode)
+                    throw new Exception("Could not retrieve the Products");
+                var content = await productsResponse.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<List<Product>>(content);
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
         }
 
         public async Task RegisterProduct(RegisterProductCommand command)

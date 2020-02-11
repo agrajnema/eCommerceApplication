@@ -57,15 +57,16 @@ namespace ProductManagementApi
 
             app.UseHttpsRedirection();
 
-            app.UseRouting();
+            //app.UseRouting();
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Product Management API v1"));
-            app.UseAuthorization();
+            //app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+            //app.UseEndpoints(endpoints =>
+            //{
+            //    endpoints.MapControllers();
+            //});
+            app.UseMvc();
             DBSeeder.PopulateDB(app);
         }
 

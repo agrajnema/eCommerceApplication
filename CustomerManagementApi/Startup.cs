@@ -34,7 +34,7 @@ namespace CustomerManagementApi
             services.AddScoped<ICustomerService, CustomerService>();
             services.AddScoped<ICustomerRepository, CustomerRepository>();
             services.AddDbContext<CustomerDBContext>(options => options.UseSqlServer(ReturnConnectionString()));
-            services.AddCors(options => options.AddPolicy("AllowDomain", policy => policy.AllowAnyOrigin()));
+            //services.AddCors(options => options.AddPolicy("AllowDomain", policy => policy.AllowAnyOrigin()));
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services
                 .AddMvc(options => options.EnableEndpointRouting = false)
@@ -49,11 +49,11 @@ namespace CustomerManagementApi
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseRouting();
 
-            app.UseAuthorization();
+            //app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

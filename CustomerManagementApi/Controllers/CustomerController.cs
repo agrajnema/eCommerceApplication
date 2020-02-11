@@ -10,7 +10,6 @@ using CustomerManagementApi.Model;
 
 namespace CustomerManagementApi.Controllers
 {
-    [Authorize]
     [Route("/api/[controller]")]
     public class CustomerController: ControllerBase
     {
@@ -23,7 +22,7 @@ namespace CustomerManagementApi.Controllers
             _mapper = mapper;
         }
 
-        [AllowAnonymous]
+        //[AllowAnonymous]
         [HttpPost("register")]
         public IActionResult Register([FromBody] RegisterCustomerModel model)
         {
@@ -39,7 +38,7 @@ namespace CustomerManagementApi.Controllers
             }
         }
 
-        [AllowAnonymous]
+        //[AllowAnonymous]
         [HttpPost("authenticate")]
         public IActionResult Authenticate([FromBody] AuthenticateCustomerModel model)
         {
