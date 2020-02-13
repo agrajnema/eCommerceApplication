@@ -7,22 +7,30 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using CustomerManagementApi.Model;
+using System.Text;
+using Microsoft.Extensions.Configuration;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
 
 namespace CustomerManagementApi.Controllers
 {
+    [Authorize]
     [Route("/api/[controller]")]
-    public class CustomerController: ControllerBase
+    public class CustomerController : ControllerBase
     {
         private readonly ICustomerService _customerService;
         private readonly IMapper _mapper;
+        private readonly IConfiguration _configuration;
 
-        public CustomerController(ICustomerService customerService, IMapper mapper)
+        public CustomerController(ICustomerService customerService, IMapper mapper, IConfiguration configuration)
         {
             _customerService = customerService;
             _mapper = mapper;
+            _configuration = configuration;
         }
 
-        //[AllowAnonymous]
+        [AllowAnonymous]
         [HttpPost("register")]
         public IActionResult Register([FromBody] RegisterCustomerModel model)
         {
@@ -32,23 +40,43 @@ namespace CustomerManagementApi.Controllers
                 _customerService.Create(customer, model.Password);
                 return Ok();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
         }
 
-        //[AllowAnonymous]
+        [AllowAnonymous]
         [HttpPost("authenticate")]
-        public IActionResult Authenticate([FromBody] AuthenticateCustomerModel model)
+        public async Task<IActionResult> Authenticate([FromBody] AuthenticateCustomerModel model)
         {
-            var customer = _customerService.Authenticate(model.EmailAddress, model.Password);
+            var customer = await _customerService.Authenticate(model.EmailAddress, model.Password);
 
             if (customer == null)
                 return BadRequest("User name or password is incorrect");
 
-            throw new NotImplementedException();
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_configuration.GetValue<string>("SecretKey"));
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new Claim[]{
+                    new Claim(ClaimTypes.Name, customer.CustomerId.ToString())
+                }),
+                Expires = DateTime.UtcNow.AddDays(7),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            var tokenString = tokenHandler.WriteToken(token);
 
+            return Ok(new
+                {
+                    CustomerId = customer.CustomerId,
+                    EmailAddress = customer.EmailAddress,
+                    FirstName = customer.FirstName,
+                    LastName = customer.LastName,
+                    Token = tokenString
+                }
+            );
         }
 
         [HttpGet("/customer")]

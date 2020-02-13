@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace eCommerceWebApp.Models
+namespace eCommerceWebApp.Models.Product
 {
     public class Product
     {

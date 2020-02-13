@@ -11,7 +11,11 @@
       ],
       "UpstreamPathTemplate": "/product/{everything}",
       "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete", "Options" ],
-      "Priority": 1
+      "Priority": 1,
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "TestKey",
+        "AllowedScopes": []
+      }
     }
   ],
   "GlobalConfiguration": {

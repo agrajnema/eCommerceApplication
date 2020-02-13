@@ -15,6 +15,9 @@ using Microsoft.Extensions.Logging;
 using CustomerManagementApi.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using CustomerManagementApi.Model;
 
 namespace CustomerManagementApi
 {
@@ -39,6 +42,7 @@ namespace CustomerManagementApi
             services
                 .AddMvc(options => options.EnableEndpointRouting = false)
                 .AddNewtonsoftJson();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -53,12 +57,13 @@ namespace CustomerManagementApi
 
             app.UseRouting();
 
-            //app.UseAuthorization();
+           
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
+            DBSeeder.PopulateDB(app);
         }
 
         private string ReturnConnectionString()

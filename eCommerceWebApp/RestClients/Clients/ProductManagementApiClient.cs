@@ -6,10 +6,10 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using eCommerceWebApp.Commands;
-using eCommerceWebApp.Models;
 using Microsoft.Extensions.Configuration;
 using System.Web;
 using Newtonsoft.Json;
+using eCommerceWebApp.Models.Product;
 
 namespace eCommerceWebApp.RestClients
 {

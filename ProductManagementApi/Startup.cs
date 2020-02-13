@@ -15,6 +15,8 @@ using ProductManagementApi.Filters;
 using ProductManagementApi.Repository;
 using ProductManagementApi.Models;
 using InfrastructureLibrary;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace ProductManagementApi
 {
@@ -45,6 +47,23 @@ namespace ProductManagementApi
             services
                 .AddMvc(options => options.EnableEndpointRouting = false)
                 .AddNewtonsoftJson();
+            var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_configuration.GetValue<string>("SecretKey")));
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = signingKey,
+                ValidateIssuer = false,
+                ValidateAudience = false
+            };
+            services.AddAuthentication(auth =>
+            {
+                auth.DefaultAuthenticateScheme = "AuthenticationKey";
+            })
+            .AddJwtBearer("AuthenticationKey", auth =>
+            {
+                auth.RequireHttpsMetadata = false;
+                auth.TokenValidationParameters = tokenValidationParameters;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -57,15 +76,10 @@ namespace ProductManagementApi
 
             app.UseHttpsRedirection();
 
-            //app.UseRouting();
+            
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Product Management API v1"));
-            //app.UseAuthorization();
-
-            //app.UseEndpoints(endpoints =>
-            //{
-            //    endpoints.MapControllers();
-            //});
+            app.UseAuthentication();
             app.UseMvc();
             DBSeeder.PopulateDB(app);
         }

@@ -10,10 +10,11 @@ using ProductManagementApi.Repository;
 using ProductManagementApi.Mappers;
 using Newtonsoft.Json;
 using InfrastructureLibrary;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ProductManagementApi.Controllers
 {
-    
+    [Authorize]
     [Route("/api/[controller]")]
     public class ProductController : ControllerBase
     {

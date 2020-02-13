@@ -1,5 +1,5 @@
 ﻿using eCommerceWebApp.Commands;
-using eCommerceWebApp.Models;
+using eCommerceWebApp.Models.Product;
 using System;
 using System.Collections.Generic;
 using System.Linq;

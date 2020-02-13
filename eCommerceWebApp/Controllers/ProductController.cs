@@ -6,7 +6,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using eCommerceWebApp.Mappers;
-using eCommerceWebApp.Models;
+using eCommerceWebApp.Models.Product;
 using eCommerceWebApp.RestClients;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
