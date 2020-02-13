@@ -1,2 +1,2 @@
 # eCommerceApplication
-Asp.net Core + WebAPI + Docker + Microservices + RabbitMQ
+Asp.net Core + WebAPI + Docker + Microservices + RabbitMQ + Ocelot API Gateway
