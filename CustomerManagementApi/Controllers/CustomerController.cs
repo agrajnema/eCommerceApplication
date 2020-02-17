@@ -12,6 +12,8 @@ using Microsoft.Extensions.Configuration;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
+using CustomerManagementApi.Commands;
+using CustomerManagementApi.Mapper;
 
 namespace CustomerManagementApi.Controllers
 {
@@ -32,12 +34,15 @@ namespace CustomerManagementApi.Controllers
 
         [AllowAnonymous]
         [HttpPost("register")]
-        public IActionResult Register([FromBody] RegisterCustomerModel model)
+        public async Task<IActionResult> Register([FromBody] RegisterCustomerCommand registerCustomerCommand)
         {
             try
             {
-                var customer = _mapper.Map<Customer>(model);
-                _customerService.Create(customer, model.Password);
+                var customer = registerCustomerCommand.MapCustomerCommandToCustomer();
+                Console.WriteLine("Inside customer controller");
+                await _customerService.Create(customer, registerCustomerCommand.Password);
+
+                //Publish to RabbitMQ
                 return Ok();
             }
             catch (Exception ex)

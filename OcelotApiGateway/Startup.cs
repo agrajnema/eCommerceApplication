@@ -29,11 +29,12 @@ namespace OcelotApiGateway
         {
             services.AddMvc(options => options.EnableEndpointRouting = false);
 
-            var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_configuration.GetValue<string>("SecretKey")));
+            var key = _configuration.GetValue<string>("SecretKey");
+            var signingKey = Encoding.ASCII.GetBytes(key);
             var tokenValidationParameters = new TokenValidationParameters
             {
                 ValidateIssuerSigningKey = true,
-                IssuerSigningKey = signingKey,
+                IssuerSigningKey = new SymmetricSecurityKey(signingKey),
                 ValidateIssuer = false,
                 ValidateAudience = false
             };
@@ -47,6 +48,8 @@ namespace OcelotApiGateway
                 auth.TokenValidationParameters = tokenValidationParameters;
             });
 
+            services.AddOcelot();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -58,6 +61,7 @@ namespace OcelotApiGateway
             }
             app.UseAuthentication();
             app.UseMvc();
+            app.UseOcelot().Wait();
         }
     }
 }

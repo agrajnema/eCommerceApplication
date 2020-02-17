@@ -57,6 +57,7 @@ services:
   customermanagementapi:
     image: customermanagementapi
     hostname: customermanagementapi
+    container_name: customermanagementapi
     build:
       context: .
       dockerfile: Dockerfile_Customer

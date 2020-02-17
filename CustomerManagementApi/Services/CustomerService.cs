@@ -35,8 +35,11 @@ namespace CustomerManagementApi.Services
             if (string.IsNullOrEmpty(password))
                 throw new Exception("Password is required");
 
-            if (GetByEmailId(customer.EmailAddress) != null)
+            var doesCustomerExist = await GetByEmailId(customer.EmailAddress);
+            if (doesCustomerExist != null)
                 throw new Exception("User with the email address already exist");
+
+            Console.WriteLine("Response received from customer email id check");
 
             byte[] passwordHash, passwordSalt;
             CreatePasswordHash(password, out passwordHash, out passwordSalt);
@@ -44,6 +47,11 @@ namespace CustomerManagementApi.Services
             customer.PasswordHash = passwordHash;
             customer.PasswordSalt = passwordSalt;
 
+            Console.WriteLine(customer.FirstName);
+            Console.WriteLine(customer.LastName);
+            Console.WriteLine(customer.EmailAddress);
+            Console.WriteLine(customer.PasswordSalt);
+            Console.WriteLine(customer.PasswordHash);
             await _customerRepository.Create(customer);
             return customer;
 

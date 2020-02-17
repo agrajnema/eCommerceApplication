@@ -13,7 +13,7 @@ namespace CustomerManagementApi.Repository
         Task<IEnumerable<Customer>> GetAll();
         Task<Customer> GetById(int customerId);
         Task<Customer> GetByEmailId(string emailID);
-        Task<Customer> Create(Customer customer);
+        Task Create(Customer customer);
     }
 
     public class CustomerRepository : ICustomerRepository
@@ -24,11 +24,11 @@ namespace CustomerManagementApi.Repository
             _context = context;
         }
 
-        public async Task<Customer> Create(Customer customer)
+        public async Task Create(Customer customer)
         {
             _context.Customers.Add(customer);
             await _context.SaveChangesAsync();
-            return customer;
+            //return customer;
         }
 
         public async Task<IEnumerable<Customer>> GetAll()
@@ -38,12 +38,15 @@ namespace CustomerManagementApi.Repository
 
         public async Task<Customer> GetByEmailId(string emailID)
         {
-            return await _context.Customers.FirstOrDefaultAsync(cust => cust.EmailAddress == emailID);
+            if (!_context.Customers.Any())                
+                return null;
+
+            return await _context.Customers.Where(cust => cust.EmailAddress == emailID).FirstOrDefaultAsync();
         }
 
         public async Task<Customer> GetById(int customerId)
         {
-            return await _context.Customers.FirstOrDefaultAsync(cust => cust.CustomerId == customerId);
+            return await _context.Customers.Where(cust => cust.CustomerId == customerId).FirstOrDefaultAsync();
         }
     }
 }

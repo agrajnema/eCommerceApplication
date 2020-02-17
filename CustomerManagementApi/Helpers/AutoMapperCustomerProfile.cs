@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using CustomerManagementApi.Commands;
 using CustomerManagementApi.Model;
 
 namespace CustomerManagementApi.Helpers
@@ -13,6 +14,7 @@ namespace CustomerManagementApi.Helpers
         {
             CreateMap<Customer, CustomerModel>();
             CreateMap<RegisterCustomerModel, Customer>();
+            CreateMap<RegisterCustomerCommand, Customer>();
         }
     }
 }

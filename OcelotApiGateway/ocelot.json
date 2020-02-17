@@ -13,9 +13,22 @@
       "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete", "Options" ],
       "Priority": 1,
       "AuthenticationOptions": {
-        "AuthenticationProviderKey": "TestKey",
+        "AuthenticationProviderKey": "AuthenticationKey",
         "AllowedScopes": []
       }
+    },
+    {
+      "DownstreamPathTemplate": "/api/customer/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "10.40.198.209",
+          "Port": "8200"
+        }
+      ],
+      "UpstreamPathTemplate": "/customer/{everything}",
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete", "Options" ],
+      "Priority": 1
     }
   ],
   "GlobalConfiguration": {

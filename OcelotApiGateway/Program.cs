@@ -14,32 +14,52 @@ namespace OcelotApiGateway
 {
     public class Program
     {
+        //public static void Main(string[] args)
+        //{
+        //    new WebHostBuilder()
+        //    .UseKestrel()
+        //    .UseContentRoot(Directory.GetCurrentDirectory())
+        //    .UseStartup<Startup>()
+        //    .ConfigureAppConfiguration((hostingContext, config) =>
+        //    {
+        //        config
+        //            .SetBasePath(hostingContext.HostingEnvironment.ContentRootPath)
+        //            .AddJsonFile("ocelot.json")
+        //            .AddEnvironmentVariables();
+        //    })
+        //    //.ConfigureServices(s => {
+        //    //    s.AddOcelot();
+        //    //})
+        //    //.ConfigureLogging((hostingContext, logging) =>
+        //    //{
+        //    //       //add your logging
+        //    //   })
+        //    //.UseIISIntegration()
+        //    //.Configure(app =>
+        //    //{
+        //    //    app.UseOcelot().Wait();
+        //    //})
+        //    .Build()
+        //    .Run();
+        //}
+
         public static void Main(string[] args)
         {
-            new WebHostBuilder()
-            .UseKestrel()
-            .UseContentRoot(Directory.GetCurrentDirectory())
+            CreateHostBuilder(args).Build().Run();
+        }
+
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder.UseStartup<Startup>();
+                })
             .ConfigureAppConfiguration((hostingContext, config) =>
             {
                 config
                     .SetBasePath(hostingContext.HostingEnvironment.ContentRootPath)
                     .AddJsonFile("ocelot.json")
                     .AddEnvironmentVariables();
-            })
-            .ConfigureServices(s => {
-                s.AddOcelot();
-            })
-            .ConfigureLogging((hostingContext, logging) =>
-            {
-                   //add your logging
-               })
-            .UseIISIntegration()
-            .Configure(app =>
-            {
-                app.UseOcelot().Wait();
-            })
-            .Build()
-            .Run();
-        }
+            });
     }
 }

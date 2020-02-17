@@ -36,7 +36,7 @@ namespace CustomerManagementApi
             services.AddControllers();
             services.AddScoped<ICustomerService, CustomerService>();
             services.AddScoped<ICustomerRepository, CustomerRepository>();
-            services.AddDbContext<CustomerDBContext>(options => options.UseSqlServer(ReturnConnectionString()));
+            services.AddDbContext<CustomerDBContext>(options => options.UseSqlServer(ReturnConnectionString()),ServiceLifetime.Transient);
             //services.AddCors(options => options.AddPolicy("AllowDomain", policy => policy.AllowAnyOrigin()));
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services
@@ -57,8 +57,8 @@ namespace CustomerManagementApi
 
             app.UseRouting();
 
-           
 
+            app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

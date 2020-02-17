@@ -16,7 +16,6 @@ namespace eCommerceWebApp.Models.Customer
         [Required]
         [Display(Name = "Email")]
         public string EmailAddress { get; set; }
-        [Required]
-        public string Password { get; set; }
+        public string Token { get; set; }
     }
 }

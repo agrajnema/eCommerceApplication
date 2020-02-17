@@ -40,7 +40,7 @@ namespace ProductManagementApi
             //    options.Filters.Add<JsonExceptionFilter>();
             //    options.Filters.Add<RequireHttpsOrCloseAttribute>();
             //});
-            services.AddDbContext<ProductDBContext>(options => options.UseSqlServer(ReturnConnectionString()));
+            services.AddDbContext<ProductDBContext>(options => options.UseSqlServer(ReturnConnectionString()),ServiceLifetime.Transient);
             services.AddSwaggerGen(c => c.SwaggerDoc("v1", new OpenApiInfo { Version = "v1", Title = "Product Management" }));
             services.AddCors(options => options.AddPolicy("AllowDomain", policy => policy.AllowAnyOrigin()));
             services.AddScoped<IProductRepository, ProductRepository>();
