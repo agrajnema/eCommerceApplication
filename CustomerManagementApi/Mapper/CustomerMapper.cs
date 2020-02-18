@@ -1,4 +1,5 @@
 ﻿using CustomerManagementApi.Commands;
+using CustomerManagementApi.Events;
 using CustomerManagementApi.Model;
 using System;
 using System.Collections.Generic;
@@ -16,5 +17,13 @@ namespace CustomerManagementApi.Mapper
             LastName = registerCustomerCommand.LastName,
             EmailAddress = registerCustomerCommand.EmailAddress
         };
+
+        public static CustomerRegisteredEvent MapCustomerCommandToEvent(this RegisterCustomerCommand command) => new CustomerRegisteredEvent
+        (
+          Guid.NewGuid(),
+          command.FirstName,
+          command.LastName,
+          command.EmailAddress 
+        );
     }
 }

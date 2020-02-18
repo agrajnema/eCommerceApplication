@@ -18,6 +18,7 @@ using AutoMapper;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using CustomerManagementApi.Model;
+using InfrastructureLibrary;
 
 namespace CustomerManagementApi
 {
@@ -42,7 +43,7 @@ namespace CustomerManagementApi
             services
                 .AddMvc(options => options.EnableEndpointRouting = false)
                 .AddNewtonsoftJson();
-
+            AddRabbitMQ(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -75,6 +76,17 @@ namespace CustomerManagementApi
             var database = _configuration["Database"] ?? "CustomerDB";
             var connectionString = $"Server={server},{port};Initial Catalog={database}; User ID={user}; Password={password}";
             return connectionString;
+        }
+
+        private void AddRabbitMQ(IServiceCollection services)
+        {
+            var rabbitMQConfigSection = _configuration.GetSection("RabbitMQ");
+            var userName = rabbitMQConfigSection["UserName"];
+            var password = rabbitMQConfigSection["Password"];
+            var host = rabbitMQConfigSection["Host"];
+            var exchangeName = rabbitMQConfigSection["ExchangeName"];
+            var exchangeType = rabbitMQConfigSection["ExchangeType"];
+            services.AddTransient<IMessagePublisher>((mp) => new RabbitMQMessagePublisher(host, userName, password, exchangeName, exchangeType));
         }
     }
 }

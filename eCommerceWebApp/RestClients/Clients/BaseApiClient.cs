@@ -13,5 +13,6 @@ namespace eCommerceWebApp.RestClients
             OcelotApiGatewayAddress = configuration.GetSection("ApiAddress").GetValue<string>("OcelotApiGateway");
         }
         public string OcelotApiGatewayAddress { get; set; }
+        public static string JWTToken { get; set; }
     }
 }

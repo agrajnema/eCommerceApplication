@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using System.Web;
 using Newtonsoft.Json;
 using eCommerceWebApp.Models.Product;
+using Microsoft.AspNetCore.Http;
 
 namespace eCommerceWebApp.RestClients
 {
@@ -22,6 +23,8 @@ namespace eCommerceWebApp.RestClients
         {
             _httpClient = httpClient;
             _httpClient.BaseAddress = new Uri($"http://{OcelotApiGatewayAddress}/product/");
+            if(!string.IsNullOrEmpty(JWTToken))
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", BaseApiClient.JWTToken);
         }
         public async Task<Product> GetProductById(int id)
         {

@@ -1,5 +1,6 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
+@using Microsoft.AspNetCore.Http;
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -24,9 +25,20 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Customer" asp-action="Register">Customer Management</a>
-                        </li>
+                        @if (Context.Session.GetString("LoggedInUserFirstName") != null)
+                        {
+                            <li class="nav-item float-right">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Customer" asp-action="Logout">Logout - @Convert.ToString(Context.Session.GetString("LoggedInUserFirstName"))</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item float-right">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Customer" asp-action="Login">Login/Sign Up</a>
+                            </li>
+                        }
+
+
                     </ul>
                 </div>
             </div>

@@ -25,6 +25,12 @@ namespace eCommerceWebApp.Controllers
         {
             return View();
         }
+
+        [HttpGet]
+        public IActionResult Login()
+        {
+            return View();
+        }
         [HttpPost]
         public IActionResult Register([FromForm] RegisterCustomer customer)
         {
@@ -40,18 +46,31 @@ namespace eCommerceWebApp.Controllers
             }
         }
 
+        [HttpPost]
         public async Task<IActionResult> Login([FromForm] AuthenticateCustomer customer)
         {
             if (ModelState.IsValid)
             {
                 var authenticatedCustomer = await _customerManagementApiClient.AuthenticateCustomer(customer);
                 HttpContext.Session.SetString("JWTToken", authenticatedCustomer.Token);
-                return View();
+                if (!string.IsNullOrEmpty(authenticatedCustomer?.Token))                    
+                    HttpContext.Session.SetString("LoggedInUserFirstName", authenticatedCustomer.FirstName);
+                
+                return RedirectToAction("","Home");
             }
             else
             {
                 return View("Login", customer);
             }
+        }
+
+        [HttpGet]
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Remove("JWTToken");
+            HttpContext.Session.Remove("LoggedInUserFirstName");
+            BaseApiClient.JWTToken = string.Empty;
+            return RedirectToAction("Login");
         }
     }
 }

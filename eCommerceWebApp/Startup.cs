@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Text.Json;
 using System.Net.Http;
+using Microsoft.AspNetCore.Http;
 
 namespace eCommerceWebApp
 {
@@ -30,8 +31,8 @@ namespace eCommerceWebApp
                 .AddMvc(options => options.EnableEndpointRouting = false)
                 .AddNewtonsoftJson();
             services.AddCors(options => options.AddPolicy("AllowDomain", policy => policy.AllowAnyOrigin()));
-            
 
+            services.AddSession();
             services.AddControllersWithViews();
             services.AddHttpClient<IProductManagementApiClient, ProductManagementApiClient>();
             services.AddHttpClient<ICustomerManagementApiClient, CustomerManagementApiClient>();
@@ -52,9 +53,21 @@ namespace eCommerceWebApp
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-            
-            app.UseRouting();
 
+            app.UseCookiePolicy();
+            app.UseSession();
+            app.UseRouting();
+            app.UseStatusCodePages();
+            app.Use(async (context, next) =>
+            {
+                var jwtToken = context.Session.GetString("JWTToken");
+                if (!string.IsNullOrEmpty(jwtToken))
+                {
+                    context.Request.Headers.Add("Authorization", $"Bearer {jwtToken}");
+                    BaseApiClient.JWTToken = jwtToken;
+                }
+                await next();
+            });
             //app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

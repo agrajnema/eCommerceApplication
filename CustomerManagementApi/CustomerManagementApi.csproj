@@ -28,7 +28,6 @@
 
   <ItemGroup>
     <Folder Include="DataAccess\" />
-    <Folder Include="Events\" />
   </ItemGroup>
 
 </Project>

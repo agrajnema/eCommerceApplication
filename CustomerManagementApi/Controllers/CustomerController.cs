@@ -14,6 +14,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using CustomerManagementApi.Commands;
 using CustomerManagementApi.Mapper;
+using InfrastructureLibrary;
 
 namespace CustomerManagementApi.Controllers
 {
@@ -24,12 +25,14 @@ namespace CustomerManagementApi.Controllers
         private readonly ICustomerService _customerService;
         private readonly IMapper _mapper;
         private readonly IConfiguration _configuration;
+        private readonly IMessagePublisher _rabbitMQPublisher;
 
-        public CustomerController(ICustomerService customerService, IMapper mapper, IConfiguration configuration)
+        public CustomerController(ICustomerService customerService, IMapper mapper, IConfiguration configuration, IMessagePublisher rabbitMQPublisher)
         {
             _customerService = customerService;
             _mapper = mapper;
             _configuration = configuration;
+            _rabbitMQPublisher = rabbitMQPublisher;
         }
 
         [AllowAnonymous]
@@ -43,6 +46,8 @@ namespace CustomerManagementApi.Controllers
                 await _customerService.Create(customer, registerCustomerCommand.Password);
 
                 //Publish to RabbitMQ
+                var customerRegisteredEvent = registerCustomerCommand.MapCustomerCommandToEvent();
+                await _rabbitMQPublisher.PublishMessageAsync(customerRegisteredEvent.MessageType, customerRegisteredEvent,"");
                 return Ok();
             }
             catch (Exception ex)
