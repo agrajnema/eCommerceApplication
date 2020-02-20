@@ -1,26 +1,67 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Hosting;
+﻿using EmailNotificationService.Channels;
+using InfrastructureLibrary;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using System;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace EmailNotificationService
 {
-    public class Program
+    class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            var host = CreateHostBuilder(args).Build();
+            await host.RunAsync();
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
+        private static IHostBuilder CreateHostBuilder(string[] args)
+        {
+            var host = Host.CreateDefaultBuilder(args)
+                .ConfigureHostConfiguration(configHost =>
                 {
-                    webBuilder.UseStartup<Startup>();
-                });
+                    configHost.SetBasePath(Directory.GetCurrentDirectory());
+                    configHost.AddJsonFile("appsettings.json", optional: false);
+                    configHost.AddEnvironmentVariables();
+                    configHost.AddCommandLine(args);
+                })
+                .ConfigureAppConfiguration((hostContext, config) =>
+                {
+                    config.AddJsonFile($"appsettings.{hostContext.HostingEnvironment.EnvironmentName}.json", optional: false);
+                })
+                .ConfigureServices((hostContext, services) =>
+                {
+                    AddRabbitMQ(hostContext, services);
+                    AddEmailServer(hostContext, services);
+                })
+                .UseConsoleLifetime();
+
+            return host;
+        }
+
+        private static void AddEmailServer(HostBuilderContext hostContext, IServiceCollection services)
+        {
+            var emailServerConfigSection = hostContext.Configuration.GetSection("emailServer");
+            var emailHost = emailServerConfigSection["Host"];
+            var emailPort = Convert.ToInt32(emailServerConfigSection["Port"]);
+            var userName = emailServerConfigSection["UserName"];
+            var password = emailServerConfigSection["Password"];
+            services.AddTransient<IEmailNotifier>(en => new EmailNotifier(emailHost, emailPort, userName, password));
+        }
+
+        private static void AddRabbitMQ(HostBuilderContext hostContext, IServiceCollection services)
+        {
+            var rabbitMQConfigSection = hostContext.Configuration.GetSection("RabbitMQ");
+            var userName = rabbitMQConfigSection["UserName"];
+            var password = rabbitMQConfigSection["Password"];
+            var host = rabbitMQConfigSection["Host"];
+            var exchangeName = rabbitMQConfigSection["ExchangeName"];
+            var exchangeType = rabbitMQConfigSection["ExchangeType"];
+            var queueName = rabbitMQConfigSection["QueueName"];
+            var routingKey = rabbitMQConfigSection["RoutingKey"];
+            services.AddTransient<IMessageHandler>((mp) => new RabbitMQMessageHandler(host, userName, password, exchangeName, exchangeType, queueName, routingKey));
+        }
     }
 }

@@ -1,0 +1,20 @@
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1 as build
+WORKDIR /build
+
+# Copy necessary files and restore as distinct layer
+#COPY ls.sln ./
+COPY InfrastructureLibrary/InfrastructureLibrary.csproj ./InfrastructureLibrary/
+COPY EmailNotificationService/EmailNotificationService.csproj ./EmailNotificationService/
+RUN dotnet restore ./EmailNotificationService/
+RUN dotnet restore ./InfrastructureLibrary/
+
+
+# Copy everything else and build
+COPY . ./
+RUN dotnet publish -c Release -o output
+
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.1
+WORKDIR /app
+COPY --from=build /build/output .
+
+ENTRYPOINT [ "dotnet", "EmailNotificationService.dll"]

@@ -27,6 +27,17 @@ services:
     ports:
       - "1434:1433"
 
+  mail:
+    image: bytemark/smtp
+    container_name: mail
+    build:
+      context: .
+      dockerfile: Dockerfile_EmailNotificationService
+    ports:
+      - "25:25"
+    depends_on:
+      - rabbitmq
+
   ocelotapigateway:
     image: ocelotapigateway
     container_name: ocelotapigateway
