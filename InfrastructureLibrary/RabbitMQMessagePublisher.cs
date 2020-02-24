@@ -41,7 +41,7 @@ namespace InfrastructureLibrary
             return Task.Run(() =>
                 Policy
                     .Handle<Exception>()
-                    .WaitAndRetry(10, r => TimeSpan.FromSeconds(5))
+                    .WaitAndRetry(9, r => TimeSpan.FromSeconds(5), (ex, ts) => { Console.WriteLine("Error connecting to RabbitMQ. Retrying in 5 seconds"); })
                     .Execute(() =>
                         {
                             var factory = new ConnectionFactory() { UserName = _userName, Password = _password };

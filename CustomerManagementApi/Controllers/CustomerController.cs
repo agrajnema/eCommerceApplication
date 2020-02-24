@@ -42,11 +42,12 @@ namespace CustomerManagementApi.Controllers
             try
             {
                 var customer = registerCustomerCommand.MapCustomerCommandToCustomer();
-                Console.WriteLine("Inside customer controller");
                 await _customerService.Create(customer, registerCustomerCommand.Password);
 
                 //Publish to RabbitMQ
                 var customerRegisteredEvent = registerCustomerCommand.MapCustomerCommandToEvent();
+                Console.WriteLine(customerRegisteredEvent.MessageId);
+                Console.WriteLine(customerRegisteredEvent.MessageType);
                 await _rabbitMQPublisher.PublishMessageAsync(customerRegisteredEvent.MessageType, customerRegisteredEvent,"");
                 return Ok();
             }
@@ -66,14 +67,17 @@ namespace CustomerManagementApi.Controllers
                 return BadRequest("User name or password is incorrect");
 
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_configuration.GetValue<string>("SecretKey"));
+            var keySection = _configuration.GetSection("Settings");
+            var key = keySection["SecretKey"];
+            var signingKey = Encoding.ASCII.GetBytes(key);
+
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[]{
                     new Claim(ClaimTypes.Name, customer.CustomerId.ToString())
                 }),
                 Expires = DateTime.UtcNow.AddDays(7),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(signingKey), SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
             var tokenString = tokenHandler.WriteToken(token);

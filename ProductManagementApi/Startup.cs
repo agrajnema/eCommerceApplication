@@ -47,11 +47,14 @@ namespace ProductManagementApi
             services
                 .AddMvc(options => options.EnableEndpointRouting = false)
                 .AddNewtonsoftJson();
-            var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_configuration.GetValue<string>("SecretKey")));
+
+            var keySection = _configuration.GetSection("Settings");
+            var key = keySection["SecretKey"];
+            var signingKey = Encoding.ASCII.GetBytes(key);
             var tokenValidationParameters = new TokenValidationParameters
             {
                 ValidateIssuerSigningKey = true,
-                IssuerSigningKey = signingKey,
+                IssuerSigningKey = new SymmetricSecurityKey(signingKey),
                 ValidateIssuer = false,
                 ValidateAudience = false
             };

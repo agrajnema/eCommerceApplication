@@ -8,6 +8,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{0C78EB34-D8A
 		.dockerignore = .dockerignore
 		docker-compose.yml = docker-compose.yml
 		Dockerfile_Customer = Dockerfile_Customer
+		Dockerfile_EmailNotificationService = Dockerfile_EmailNotificationService
 		Dockerfile_Ocelot = Dockerfile_Ocelot
 		Dockerfile_Product = Dockerfile_Product
 	EndProjectSection

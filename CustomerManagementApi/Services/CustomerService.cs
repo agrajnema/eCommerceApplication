@@ -47,11 +47,6 @@ namespace CustomerManagementApi.Services
             customer.PasswordHash = passwordHash;
             customer.PasswordSalt = passwordSalt;
 
-            Console.WriteLine(customer.FirstName);
-            Console.WriteLine(customer.LastName);
-            Console.WriteLine(customer.EmailAddress);
-            Console.WriteLine(customer.PasswordSalt);
-            Console.WriteLine(customer.PasswordHash);
             await _customerRepository.Create(customer);
             return customer;
 

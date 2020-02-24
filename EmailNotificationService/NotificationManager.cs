@@ -27,9 +27,10 @@ namespace EmailNotificationService
             try
             {
                 var messageObject = JsonConvert.DeserializeObject<JObject>(message);
+                Console.WriteLine(message);
                 switch (messageType)
                 {
-                    case "CustomerRegistered":
+                    case "CustomerRegisteredEvent":
                         await HandleAsync(messageObject.ToObject<CustomerRegisteredEvent>());
                         break;
                     default:
@@ -38,6 +39,7 @@ namespace EmailNotificationService
             }
             catch(Exception ex)
             {
+                Console.WriteLine(ex.Message);
                 Console.WriteLine($"Error while handling: {messageType} event");
             }
             return true;
@@ -49,7 +51,7 @@ namespace EmailNotificationService
             mailBody.AppendLine($"Dear {customerRegisteredEvent.FirstName},");
             mailBody.AppendLine($"Welcome! Your email address: {customerRegisteredEvent.EmailAddress} is registered with us.");
 
-            await _emailNotifier.SendEmailAsync(customerRegisteredEvent.EmailAddress, "noreply@ecommerceapp.com", "Welcome!", mailBody.ToString());
+            await _emailNotifier.SendEmailAsync(customerRegisteredEvent.EmailAddress, "noreply@tal.com.au", "Welcome!", mailBody.ToString());
         }
 
         public Task StartAsync(CancellationToken cancellationToken)

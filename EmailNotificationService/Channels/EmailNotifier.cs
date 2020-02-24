@@ -23,7 +23,7 @@ namespace EmailNotificationService.Channels
         }
         public async Task SendEmailAsync(string to, string from, string subject, string body)
         {
-            using(SmtpClient client = new SmtpClient(_smtpServer, _smtpPort))
+            using (SmtpClient client = new SmtpClient(_smtpServer, _smtpPort))
             {
                 client.UseDefaultCredentials = false;
                 client.Credentials = new NetworkCredential(_userName, _password);

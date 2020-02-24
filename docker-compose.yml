@@ -13,6 +13,7 @@ services:
     environment:
       - RABBITMQ_DEFAULT_USER=guest
       - RABBITMQ_DEFAULT_PASS=guest
+    dns: ${DNS_ADDRESS}
   
 
   ms-sql-server:
@@ -26,17 +27,26 @@ services:
       MSSQL_PID: Express
     ports:
       - "1434:1433"
+    dns: ${DNS_ADDRESS}
 
   mail:
-    image: bytemark/smtp
+    image: djfarrelly/maildev
     container_name: mail
+    ports:
+      - "25:25"
+      - "4000:80"
+    dns: ${DNS_ADDRESS}
+  
+  emailnotificationservice:
+    image: emailnotificationservice
+    container_name: emailnotificationservice
     build:
       context: .
       dockerfile: Dockerfile_EmailNotificationService
-    ports:
-      - "25:25"
     depends_on:
       - rabbitmq
+      - mail
+    dns: ${DNS_ADDRESS}
 
   ocelotapigateway:
     image: ocelotapigateway
@@ -49,6 +59,7 @@ services:
     depends_on:
       - productmanagementapi
       - ms-sql-server
+    dns: ${DNS_ADDRESS}
     
   productmanagementapi:
     image: productmanagementapi
@@ -64,6 +75,7 @@ services:
     depends_on:
       - rabbitmq
       - ms-sql-server
+    dns: ${DNS_ADDRESS}
 
   customermanagementapi:
     image: customermanagementapi
@@ -79,6 +91,7 @@ services:
     depends_on:
       - rabbitmq
       - ms-sql-server
+    dns: ${DNS_ADDRESS}
   
 volumes:
   rabbitmqdata:

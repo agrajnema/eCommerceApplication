@@ -23,18 +23,21 @@ namespace EmailNotificationService
                 .ConfigureHostConfiguration(configHost =>
                 {
                     configHost.SetBasePath(Directory.GetCurrentDirectory());
-                    configHost.AddJsonFile("appsettings.json", optional: false);
+                    configHost.AddJsonFile("hostsettings.json", optional: true);
+                    configHost.AddJsonFile($"appsettings.json", optional: false);
                     configHost.AddEnvironmentVariables();
                     configHost.AddCommandLine(args);
                 })
                 .ConfigureAppConfiguration((hostContext, config) =>
                 {
-                    config.AddJsonFile($"appsettings.{hostContext.HostingEnvironment.EnvironmentName}.json", optional: false);
+                    config.AddJsonFile($"appsettings.Development.json", optional: false);
+                    //config.AddJsonFile($"appsettings.{hostContext.HostingEnvironment.EnvironmentName}.json", optional: false);
                 })
                 .ConfigureServices((hostContext, services) =>
                 {
                     AddRabbitMQ(hostContext, services);
                     AddEmailServer(hostContext, services);
+                    services.AddHostedService<NotificationManager>();
                 })
                 .UseConsoleLifetime();
 
@@ -43,7 +46,7 @@ namespace EmailNotificationService
 
         private static void AddEmailServer(HostBuilderContext hostContext, IServiceCollection services)
         {
-            var emailServerConfigSection = hostContext.Configuration.GetSection("emailServer");
+            var emailServerConfigSection = hostContext.Configuration.GetSection("Email");
             var emailHost = emailServerConfigSection["Host"];
             var emailPort = Convert.ToInt32(emailServerConfigSection["Port"]);
             var userName = emailServerConfigSection["UserName"];
