@@ -46,8 +46,6 @@ namespace CustomerManagementApi.Controllers
 
                 //Publish to RabbitMQ
                 var customerRegisteredEvent = registerCustomerCommand.MapCustomerCommandToEvent();
-                Console.WriteLine(customerRegisteredEvent.MessageId);
-                Console.WriteLine(customerRegisteredEvent.MessageType);
                 await _rabbitMQPublisher.PublishMessageAsync(customerRegisteredEvent.MessageType, customerRegisteredEvent,"");
                 return Ok();
             }
