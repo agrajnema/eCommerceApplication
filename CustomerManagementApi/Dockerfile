@@ -1,23 +1,23 @@
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1 as build
+#See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
+
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-buster-slim AS base
+WORKDIR /app
 EXPOSE 80
 EXPOSE 443
-WORKDIR /build
 
-# Copy necessary files and restore as distinct layer
-#COPY "InfrastructureLibrary/InfrastructureLibrary.csproj" "InfrastructureLibrary/InfrastructureLibrary.csproj"
-#COPY "CustomerManagementApi/CustomerManagementApi.csproj" "CustomerManagementApi/CustomerManagementApi.csproj"
-#RUN dotnet restore "InfrastructureLibrary/InfrastructureLibrary.csproj"
-#RUN dotnet restore "CustomerManagementApi/CustomerManagementApi.csproj"
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
+WORKDIR /src
+COPY ["CustomerManagementApi/CustomerManagementApi.csproj", "CustomerManagementApi/"]
+COPY ["InfrastructureLibrary/InfrastructureLibrary.csproj", "InfrastructureLibrary/"]
+RUN dotnet restore "CustomerManagementApi/CustomerManagementApi.csproj"
+COPY . .
+WORKDIR "/src/CustomerManagementApi"
+RUN dotnet build "CustomerManagementApi.csproj" -c Release -o /app/build
 
-COPY *.csproj ./
-RUN dotnet restore
+FROM build AS publish
+RUN dotnet publish "CustomerManagementApi.csproj" -c Release -o /app/publish
 
-# Copy everything else and build
-COPY . ./
-RUN dotnet publish -c Release -o output
-
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.1
+FROM base AS final
 WORKDIR /app
-COPY --from=build /build/output .
-
-ENTRYPOINT [ "dotnet", "CustomerManagementApi.dll"]
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "CustomerManagementApi.dll"]

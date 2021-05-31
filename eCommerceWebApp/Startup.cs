@@ -12,6 +12,8 @@ using Microsoft.Extensions.Hosting;
 using System.Text.Json;
 using System.Net.Http;
 using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
+using eCommerceWebApp.Infrastructure;
 
 namespace eCommerceWebApp
 {
@@ -32,10 +34,11 @@ namespace eCommerceWebApp
                 .AddNewtonsoftJson();
             services.AddCors(options => options.AddPolicy("AllowDomain", policy => policy.AllowAnyOrigin()));
 
+            services.AddHttpClient();
             services.AddSession();
             services.AddControllersWithViews();
-            services.AddHttpClient<IProductManagementApiClient, ProductManagementApiClient>();
-            services.AddHttpClient<ICustomerManagementApiClient, CustomerManagementApiClient>();
+            services.AddTransient<IProductManagementApiClient, ProductManagementApiClient>();
+            services.AddTransient<ICustomerManagementApiClient, CustomerManagementApiClient>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -64,7 +67,7 @@ namespace eCommerceWebApp
                 if (!string.IsNullOrEmpty(jwtToken))
                 {
                     context.Request.Headers.Add("Authorization", $"Bearer {jwtToken}");
-                    BaseApiClient.JWTToken = jwtToken;
+                    BaseHttpClientWithFactory.JWTToken = jwtToken;
                 }
                 await next();
             });

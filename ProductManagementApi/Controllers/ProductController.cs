@@ -14,8 +14,8 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace ProductManagementApi.Controllers
 {
-    [Authorize]
-    [Route("/api/[controller]")]
+    //[Authorize]
+    [Route("api/[controller]")]
     public class ProductController : ControllerBase
     {
         private readonly IProductRepository _productRepository;
@@ -27,6 +27,7 @@ namespace ProductManagementApi.Controllers
             _rabbitMQPublisher = rabbitMQPublisher;
         }
 
+        [HttpGet]
         [Route("product")]
         public async Task<IActionResult> GetAll()
         {

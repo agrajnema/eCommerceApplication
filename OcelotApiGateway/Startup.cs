@@ -29,25 +29,25 @@ namespace OcelotApiGateway
         {
             services.AddMvc(options => options.EnableEndpointRouting = false);
 
-            var keySection = _configuration.GetSection("Settings");
-            var key = keySection["SecretKey"];
-            var signingKey = Encoding.ASCII.GetBytes(key);
-            var tokenValidationParameters = new TokenValidationParameters
-            {
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(signingKey),
-                ValidateIssuer = false,
-                ValidateAudience = false
-            };
-            services.AddAuthentication(auth =>
-            {
-                auth.DefaultAuthenticateScheme = "AuthenticationKey";
-            })
-            .AddJwtBearer("AuthenticationKey", auth=>
-            {
-                auth.RequireHttpsMetadata = false;
-                auth.TokenValidationParameters = tokenValidationParameters;
-            });
+           // var keySection = _configuration.GetSection("Settings");
+           // var key = keySection["SecretKey"];
+           // var signingKey = Encoding.ASCII.GetBytes(key);
+           // var tokenValidationParameters = new TokenValidationParameters
+           // {
+           //     ValidateIssuerSigningKey = true,
+           //     IssuerSigningKey = new SymmetricSecurityKey(signingKey),
+           //     ValidateIssuer = false,
+           //     ValidateAudience = false
+           // };
+           // services.AddAuthentication(o =>
+           // {
+           //     o.DefaultAuthenticateScheme = "AuthenticationKey";
+           // })
+           //.AddJwtBearer("AuthenticationKey", auth=>
+           // {
+           //     auth.RequireHttpsMetadata = false;
+           //     auth.TokenValidationParameters = tokenValidationParameters;
+           // });
 
             services.AddOcelot();
 
@@ -60,7 +60,7 @@ namespace OcelotApiGateway
             {
                 app.UseDeveloperExceptionPage();
             }
-            app.UseAuthentication();
+            //app.UseAuthentication();
             app.UseMvc();
             app.UseOcelot().Wait();
         }

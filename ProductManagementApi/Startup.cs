@@ -40,33 +40,31 @@ namespace ProductManagementApi
             //    options.Filters.Add<JsonExceptionFilter>();
             //    options.Filters.Add<RequireHttpsOrCloseAttribute>();
             //});
-            services.AddDbContext<ProductDBContext>(options => options.UseSqlServer(ReturnConnectionString()),ServiceLifetime.Transient);
+            services.AddDbContext<ProductDBContext>(options => options.UseSqlServer(ReturnConnectionString()), ServiceLifetime.Transient);
             services.AddSwaggerGen(c => c.SwaggerDoc("v1", new OpenApiInfo { Version = "v1", Title = "Product Management" }));
             services.AddCors(options => options.AddPolicy("AllowDomain", policy => policy.AllowAnyOrigin()));
             services.AddScoped<IProductRepository, ProductRepository>();
             services
                 .AddMvc(options => options.EnableEndpointRouting = false)
-                .AddNewtonsoftJson();
+                .AddNewtonsoftJson(); 
 
-            var keySection = _configuration.GetSection("Settings");
-            var key = keySection["SecretKey"];
-            var signingKey = Encoding.ASCII.GetBytes(key);
-            var tokenValidationParameters = new TokenValidationParameters
-            {
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(signingKey),
-                ValidateIssuer = false,
-                ValidateAudience = false
-            };
-            services.AddAuthentication(auth =>
-            {
-                auth.DefaultAuthenticateScheme = "AuthenticationKey";
-            })
-            .AddJwtBearer("AuthenticationKey", auth =>
-            {
-                auth.RequireHttpsMetadata = false;
-                auth.TokenValidationParameters = tokenValidationParameters;
-            });
+            //var keySection = _configuration.GetSection("Settings");
+            //var key = keySection["SecretKey"];
+            //var signingKey = Encoding.ASCII.GetBytes(key);
+            //var tokenValidationParameters = new TokenValidationParameters
+            //{
+            //    ValidateIssuerSigningKey = true,
+            //    IssuerSigningKey = new SymmetricSecurityKey(signingKey),
+            //    ValidateIssuer = false,
+            //    ValidateAudience = false
+            //};
+            //services.AddAuthentication()
+            //.AddJwtBearer("AuthenticationKey", auth =>
+            //{
+            //    auth.RequireHttpsMetadata = false;
+            //    auth.TokenValidationParameters = tokenValidationParameters;
+            //}
+            //);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -82,14 +80,14 @@ namespace ProductManagementApi
             
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Product Management API v1"));
-            app.UseAuthentication();
+            //app.UseAuthentication();
             app.UseMvc();
             DBSeeder.PopulateDB(app);
         }
 
         private string ReturnConnectionString()
         {
-            var server = _configuration["DBServer"] ?? "localhost";
+            var server = _configuration["DBServer"];
             var port = _configuration["DBPort"] ?? "1433";
             var user = _configuration["DBUser"] ?? "SA";
             var password = _configuration["DBPassword"] ?? "Password@123";

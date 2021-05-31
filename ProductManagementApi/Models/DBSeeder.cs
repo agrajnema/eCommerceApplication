@@ -33,6 +33,7 @@ namespace ProductManagementApi.Models
                 
                 context.SaveChanges();
             }
+            Console.WriteLine(context.Products.Count());
         }
     }
 }

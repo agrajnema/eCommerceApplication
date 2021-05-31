@@ -72,7 +72,7 @@ namespace CustomerManagementApi
 
             app.UseHttpsRedirection();
 
-            app.UseAuthorization();
+            //app.UseAuthorization();
             app.UseMvc();
             DBSeeder.PopulateDB(app);
         }
@@ -93,10 +93,14 @@ namespace CustomerManagementApi
             var rabbitMQConfigSection = _configuration.GetSection("RabbitMQ");
             var userName = rabbitMQConfigSection["UserName"];
             var password = rabbitMQConfigSection["Password"];
-            var host = rabbitMQConfigSection["Host"];
+            var host = rabbitMQConfigSection["Host"] ?? "localhost";
+            var hostList = new List<string>();
+            hostList.Add(host);
+            hostList.Add("localhost");
+            var port = Convert.ToInt32(rabbitMQConfigSection["Port"]);
             var exchangeName = rabbitMQConfigSection["ExchangeName"];
             var exchangeType = rabbitMQConfigSection["ExchangeType"];
-            services.AddTransient<IMessagePublisher>((mp) => new RabbitMQMessagePublisher(host, userName, password, exchangeName, exchangeType));
+            services.AddTransient<IMessagePublisher>((mp) => new RabbitMQMessagePublisher(hostList, userName, password, exchangeName, exchangeType));
         }
     }
 }

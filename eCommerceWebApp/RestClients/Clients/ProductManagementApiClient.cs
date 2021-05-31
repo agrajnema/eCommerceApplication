@@ -11,39 +11,44 @@ using System.Web;
 using Newtonsoft.Json;
 using eCommerceWebApp.Models.Product;
 using Microsoft.AspNetCore.Http;
+using eCommerceWebApp.Infrastructure;
 
 namespace eCommerceWebApp.RestClients
 {
-    public class ProductManagementApiClient : BaseApiClient, IProductManagementApiClient
+    
+    public class ProductManagementApiClient : BaseHttpClientWithFactory, IProductManagementApiClient
     {
         //private readonly IProductManagementApiClient _restClient;
-        private readonly HttpClient _httpClient;
+        //private readonly HttpClient _httpClient;
+        private readonly IConfiguration _configuration;
 
-        public ProductManagementApiClient(IConfiguration configuration, HttpClient httpClient) : base(configuration)
+        public ProductManagementApiClient(IHttpClientFactory factory, IConfiguration configuration) : base(factory)
         {
-            _httpClient = httpClient;
-            _httpClient.BaseAddress = new Uri($"http://{OcelotApiGatewayAddress}/product/");
-            if(!string.IsNullOrEmpty(JWTToken))
-                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", BaseApiClient.JWTToken);
+            _configuration = configuration;
+            OcelotApiGatewayAddress = configuration.GetSection("ApiAddress").GetValue<string>("OcelotApiGateway");
         }
         public async Task<Product> GetProductById(int id)
         {
-            var productByIdResponse = await _httpClient.GetAsync($"product/{id}");
-            if (!productByIdResponse.IsSuccessStatusCode)
-                throw new Exception("Could not retrieve the Product");
-            var content = await productByIdResponse.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<Product>(content);
+
+            var message = new HttpRequestBuilder(OcelotApiGatewayAddress)
+                              .SetPath("/product")
+                              .AddToPath(Convert.ToString(id))
+                              .HttpMethod(HttpMethod.Get)
+                              .GetHttpMessage();
+
+            return await SendRequest<Product>(message);
         }
 
         public async Task<List<Product>> GetProducts()
         {
             try
             {
-                var productsResponse = await _httpClient.GetAsync("product");
-                if (!productsResponse.IsSuccessStatusCode)
-                    throw new Exception("Could not retrieve the Products");
-                var content = await productsResponse.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<List<Product>>(content);
+                var message = new HttpRequestBuilder(OcelotApiGatewayAddress)
+                              .SetPath("/product")
+                              .HttpMethod(HttpMethod.Get)
+                              .GetHttpMessage();
+
+                return await SendRequest<List<Product>>(message);
             }
             catch(Exception ex)
             {
@@ -55,17 +60,19 @@ namespace eCommerceWebApp.RestClients
         {
             try
             {
-                //await _restClient.RegisterProduct(command);
-                var data = JsonConvert.SerializeObject(command);
-                var stringContent = new StringContent(data, Encoding.UTF8, "application/json");
-                var response = await _httpClient.PostAsync("product", stringContent);
-                if (!response.IsSuccessStatusCode)
-                    throw new Exception("Could not add a product");
-                var createdProduct = JsonConvert.DeserializeObject<Product>(await response.Content.ReadAsStringAsync());
+                var message = new HttpRequestBuilder(OcelotApiGatewayAddress)
+                                   .SetPath("/product")
+                                   .HttpMethod(HttpMethod.Post)
+                                   .GetHttpMessage();
+
+                var json = JsonConvert.SerializeObject(command);
+                message.Content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                await SendRequest<Product>(message);
             }
             catch(Exception ex)
             {
-                
+
             }
         }
     }

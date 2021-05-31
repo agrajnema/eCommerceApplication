@@ -23,6 +23,7 @@ namespace CustomerManagementApi.Model
         {
             Console.WriteLine("Applying Customer Migration");
             customerDBContext.Database.Migrate();
+            Console.WriteLine("Migration applied successfully");
         }
     }
 }

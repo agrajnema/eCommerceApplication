@@ -1,37 +1,50 @@
 {
-  "ReRoutes": [
+  "Routes": [
     {
-      "DownstreamPathTemplate": "/api/product/{everything}",
+      "DownstreamPathTemplate": "/api/product/{id}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "10.40.198.209",
-          "Port": "8100"
+          "Host": "productmanagementapi",
+          "Port": "80"
         }
       ],
-      "UpstreamPathTemplate": "/product/{everything}",
-      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete", "Options" ],
-      "Priority": 1,
-      "AuthenticationOptions": {
-        "AuthenticationProviderKey": "AuthenticationKey",
-        "AllowedScopes": []
-      }
+      "UpstreamPathTemplate": "/product/{id}",
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete", "Options" ]
+      //"AuthenticationOptions": {
+      //  "AuthenticationProviderKey": "AuthenticationKey",
+      //  "AllowedScopes": []
+      //}
     },
+    {
+      "DownstreamPathTemplate": "/api/product/product",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "productmanagementapi",
+          "Port": "80"
+        }
+      ],
+      "UpstreamPathTemplate": "/product",
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete", "Options" ]
+      //"AuthenticationOptions": {
+      //  "AuthenticationProviderKey": "AuthenticationKey",
+      //  "AllowedScopes": []
+      //}
+    },
+
+
     {
       "DownstreamPathTemplate": "/api/customer/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "10.40.198.209",
-          "Port": "8200"
+          "Host": "customermanagementapi",
+          "Port": "80"
         }
       ],
       "UpstreamPathTemplate": "/customer/{everything}",
-      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete", "Options" ],
-      "Priority": 1
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete", "Options" ]
     }
-  ],
-  "GlobalConfiguration": {
-   
-  }
+  ]
 }

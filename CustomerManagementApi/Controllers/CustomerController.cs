@@ -18,8 +18,8 @@ using InfrastructureLibrary;
 
 namespace CustomerManagementApi.Controllers
 {
-    [Authorize]
-    [Route("/api/[controller]")]
+    //[Authorize]
+    [Route("api/[controller]")]
     public class CustomerController : ControllerBase
     {
         private readonly ICustomerService _customerService;
@@ -47,11 +47,12 @@ namespace CustomerManagementApi.Controllers
                 //Publish to RabbitMQ
                 var customerRegisteredEvent = registerCustomerCommand.MapCustomerCommandToEvent();
                 await _rabbitMQPublisher.PublishMessageAsync(customerRegisteredEvent.MessageType, customerRegisteredEvent,"");
+                Console.WriteLine("Message Published successfully");
                 return Ok();
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                throw ex;
             }
         }
 

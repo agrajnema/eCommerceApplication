@@ -10,8 +10,10 @@ namespace InfrastructureLibrary
 {
     public class RabbitMQMessageHandler : IMessageHandler
     {
+        private const int DEFAULT_PORT = 5672;
         private readonly List<string> _hosts;
         private readonly string _userName;
+        private readonly int _port;
         private readonly string _password;
         private readonly string _exchangeName;
         private readonly string _exchangeType;
@@ -23,28 +25,44 @@ namespace InfrastructureLibrary
         private string _consumerTag;
         private IMessageHandlerCallback _callback;
 
-        public RabbitMQMessageHandler(string host, string userName, string password, string exchangeName, string exchangeType, string queueName, string routingKey)
-            : this(new List<string>() { host }, userName, password, exchangeName, exchangeType, queueName, routingKey)
 
+        public RabbitMQMessageHandler(string host, string username, string password, string exchangeName, string exchangeType, string queuename, string routingKey)
+            : this(host, username, password, exchangeName, exchangeType, queuename, routingKey, DEFAULT_PORT)
         {
-            _hosts = new List<string> { host };
-            _userName = userName;
-            _password = password;
-            _exchangeName = exchangeName;
-            _exchangeType = exchangeType;
-            _queueName = queueName;
-            _routingKey = routingKey;
         }
 
-        public RabbitMQMessageHandler(List<string> hosts, string userName, string password, string exchangeName, string exchangeType, string queueName, string routingKey)
+        public RabbitMQMessageHandler(string host, string username, string password, string exchangeName, string exchangeType, string queuename, string routingKey, int port)
+            : this(new List<string>() { host }, username, password, exchangeName, exchangeType, queuename, routingKey, port)
         {
-            _hosts = hosts;
+        }
+
+        public RabbitMQMessageHandler(IEnumerable<string> hosts, string username, string password, string exchangeName, string exchangeType, string queuename, string routingKey)
+            : this(hosts, username, password, exchangeName, exchangeType, queuename, routingKey, DEFAULT_PORT)
+        {
+        }
+
+        public RabbitMQMessageHandler(IEnumerable<string> hosts, string userName, string password, string exchangeName, string exchangeType, string queueName, string routingKey, int port)
+        {
+            _hosts = new List<string>(hosts);
+            _port = port;
             _userName = userName;
             _password = password;
             _exchangeName = exchangeName;
             _exchangeType = exchangeType;
             _queueName = queueName;
             _routingKey = routingKey;
+
+            var logMessage = new StringBuilder();
+            logMessage.AppendLine("Create RabbitMQ message-handler instance using config:");
+            logMessage.AppendLine($" - Hosts: {string.Join(',', _hosts.ToArray())}");
+            logMessage.AppendLine($" - Port: {_port}");
+            logMessage.AppendLine($" - UserName: {_userName}");
+            logMessage.AppendLine($" - Password: {new string('*', _password.Length)}");
+            logMessage.AppendLine($" - ExchangeName: {_exchangeName}");
+            logMessage.AppendLine($" - ExchangeType: {_exchangeType}");
+            logMessage.AppendLine($" - Queue: {_queueName}");
+            logMessage.Append($" - RoutingKey: {_routingKey}");
+            Console.WriteLine(logMessage.ToString());
         }
         public void Start(IMessageHandlerCallback callback)
         {
@@ -85,7 +103,7 @@ namespace InfrastructureLibrary
         private Task<bool> HandleEvent(BasicDeliverEventArgs @event)
         {
             var messageType = Encoding.UTF8.GetString((byte[])@event.BasicProperties.Headers["MessageType"]);
-            var body = Encoding.UTF8.GetString(@event.Body);
+            var body = Encoding.UTF8.GetString(@event.Body.ToArray());
             return _callback.HandleMessageAsync(messageType, body);
         }
 
