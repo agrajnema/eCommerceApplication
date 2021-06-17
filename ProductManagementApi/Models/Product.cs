@@ -12,5 +12,9 @@ namespace ProductManagementApi.Models
         public string Description { get; set; }
         public int Quantity { get; set; }
         public decimal Price { get; set; }
+        public string Id { get; internal set; }
+        public string Summary { get; internal set; }
+        public string ImageFile { get; internal set; }
+        public string Category { get; internal set; }
     }
 }
