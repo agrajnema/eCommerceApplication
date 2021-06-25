@@ -16,7 +16,7 @@ namespace ProductManagementApi.DataAccess
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.Entity<Product>().HasKey(p => p.ProductId);
+            builder.Entity<Product>().HasKey(p => p.Id);
             builder.Entity<Product>().ToTable("Products");
             base.OnModelCreating(builder);
         }

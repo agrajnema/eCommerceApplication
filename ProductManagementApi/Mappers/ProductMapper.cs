@@ -12,21 +12,25 @@ namespace ProductManagementApi.Mappers
     {
         public static Product MapProductCommandToProduct(this RegisterProductCommand command) => new Product
         {
-            ProductId = command.ProductId,
+            Id = command.Id,
             Name = command.Name,
             Description = command.Description,
             Price = command.Price,
-            Quantity = command.Quantity
+            Quantity = command.Quantity,
+            Summary = command.Summary,
+            Category = command.Category
         };
 
         public static ProductRegisteredEvent MapProductCommandToProductRegisteredEvent(this RegisterProductCommand command) => new ProductRegisteredEvent
         (
             Guid.NewGuid(),
-            command.ProductId,
+            command.Id,
             command.Name,
             command.Description,
             command.Quantity,
-            command.Price
+            command.Price,
+            command.Summary,
+            command.Category
         );
 
     }

@@ -7,7 +7,7 @@ namespace ProductManagementApi.Models
     {
         public static void SeedData(IMongoCollection<Product> productCollection)
         {
-            var doesProductExist = productCollection.Find(p => true).Any();
+            var doesProductExist = productCollection.Find(p=> true).Any();
             if (!doesProductExist)
             {
                 productCollection.InsertManyAsync(GetSeedProductList());

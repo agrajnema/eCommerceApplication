@@ -11,7 +11,7 @@ namespace ProductManagementApi.Repository
     public interface IProductRepository
     {
         Task<IEnumerable<Product>> GetProducts();
-        Task<Product> GetProductById(int productId);
+        Task<Product> GetProductById(string productId);
         Task RegisterProduct(Product product);
     }
     public class ProductRepository : IProductRepository
@@ -22,9 +22,9 @@ namespace ProductManagementApi.Repository
             _context = context;
         }
 
-        public async Task<Product> GetProductById(int productId)
+        public async Task<Product> GetProductById(string productId)
         {
-            return await _context.Products.FirstOrDefaultAsync(p => p.ProductId == productId);
+            return await _context.Products.FirstOrDefaultAsync(p => p.Id == productId);
         }
 
         public async Task<IEnumerable<Product>> GetProducts()

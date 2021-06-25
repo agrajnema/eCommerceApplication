@@ -2,106 +2,27 @@ version: '3.4'
 
 services:
 
-  rabbitmq:
-    image: rabbitmq:latest
-    container_name: rabbitmq
-    volumes:
-      - rabbitmqdata:/var/lib/rabbitmq
-    ports:
-      - "15672:15672"
-      - "5672:5672"
-    environment:
-      - RABBITMQ_DEFAULT_USER=guest
-      - RABBITMQ_DEFAULT_PASS=guest
+  #rabbitmq:
+  #  image: rabbitmq:latest
+  #  container_name: rabbitmq
+  #  volumes:
+  #    - rabbitmqdata:/var/lib/rabbitmq
+  #  ports:
+  #    - "15672:15672"
+  #    - "5672:5672"
+  #  environment:
+  #    - RABBITMQ_DEFAULT_USER=guest
+  #    - RABBITMQ_DEFAULT_PASS=guest
+      
+  productdb:
+    image: mongo
 
-  ms-sql-server:
-    image: 'mcr.microsoft.com/mssql/server:2017-latest-ubuntu'
-    container_name: ms-sql-server
-    volumes:
-      - sqlserverdata:/var/opt/mssql 
-    environment:
-      ACCEPT_EULA: "Y"
-      SA_PASSWORD: "Password@123"
-      MSSQL_PID: Express
-    ports:
-      - "1433:1433"
-  
-  mail:
-    image: djfarrelly/maildev
-    container_name: mail
-    ports:
-      - "25:25"
-      - "4000:80"
-  
-  emailnotificationservice:
-    container_name: emailnotificationservice
-    image: emailnotificationservice
-    build:
-      context: .
-      dockerfile: EmailNotificationService/Dockerfile
-    depends_on:
-      - rabbitmq
-      - mail
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-
-  ocelotapigateway:
-    container_name: ocelotapigateway
-    image: ocelotapigateway
-    build:
-      context: .
-      dockerfile: OcelotApiGateway/Dockerfile
-    ports:
-      - "7100:80"
-    depends_on:
-      - productmanagementapi
-      - customermanagementapi
-
-  productmanagementapi:
-    container_name: productmanagementapi
-    image: productmanagementapi
+  productapi:
+    image: productapi
     build:
       context: .
       dockerfile: ProductManagementApi/Dockerfile
-    environment:
-      - DBServer=ms-sql-server
-      - ASPNETCORE_ENVIRONMENT=Development
-    ports:
-      - "8030:80"
-    depends_on:
-      - rabbitmq
-      - ms-sql-server
   
-  customermanagementapi:
-    container_name: customermanagementapi
-    image: customermanagementapi
-    build:
-      context: .
-      dockerfile: CustomerManagementApi/Dockerfile
-    environment:
-      - DBServer=ms-sql-server
-      - ASPNETCORE_ENVIRONMENT=Development
-    ports:
-      - "8020:80"
-    depends_on:
-      - rabbitmq
-      - ms-sql-server
-
-  ecommercewebapp:
-    container_name: ecommercewebapp
-    image: ${DOCKER_REGISTRY-}ecommercewebapp
-    build:
-      context: .
-      dockerfile: eCommerceWebApp/Dockerfile
-    depends_on:
-      - productmanagementapi
-      - customermanagementapi
-      - ocelotapigateway
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - "ApiAddress:OcelotApiGateway=ocelotapigateway"
-    ports:
-      - "8040:80"
 volumes:
-  rabbitmqdata:
-  sqlserverdata:
+  #rabbitmqdata:
+  mongodata:

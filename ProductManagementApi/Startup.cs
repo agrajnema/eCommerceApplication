@@ -33,17 +33,19 @@ namespace ProductManagementApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            AddRabbitMQ(services);
+            //AddRabbitMQ(services);
 
             //services.AddMvc(options =>
             //{
             //    options.Filters.Add<JsonExceptionFilter>();
             //    options.Filters.Add<RequireHttpsOrCloseAttribute>();
             //});
-            services.AddDbContext<ProductDBContext>(options => options.UseSqlServer(ReturnConnectionString()), ServiceLifetime.Transient);
+            //services.AddDbContext<ProductDBContext>(options => options.UseSqlServer(ReturnConnectionString()), ServiceLifetime.Transient);
             services.AddSwaggerGen(c => c.SwaggerDoc("v1", new OpenApiInfo { Version = "v1", Title = "Product Management" }));
             services.AddCors(options => options.AddPolicy("AllowDomain", policy => policy.AllowAnyOrigin()));
-            services.AddScoped<IProductRepository, ProductRepository>();
+            //services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<IProductMongoRepository, ProductMongoRepository>();
+            services.AddScoped<IProductDBMongoContext, ProductDBMongoContext>();
             services
                 .AddMvc(options => options.EnableEndpointRouting = false)
                 .AddNewtonsoftJson(); 
@@ -82,7 +84,7 @@ namespace ProductManagementApi
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Product Management API v1"));
             //app.UseAuthentication();
             app.UseMvc();
-            DBSeeder.PopulateDB(app);
+          //  DBSeeder.PopulateDB(app);
         }
 
         private string ReturnConnectionString()
