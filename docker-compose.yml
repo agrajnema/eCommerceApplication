@@ -19,7 +19,9 @@ services:
   
   basketdb:
     image: redis
-
+  
+  portainer:
+    image: portainer/portainer-ce
   productapi:
     image: productapi
     build:
@@ -35,3 +37,4 @@ services:
 volumes:
   #rabbitmqdata:
   mongodata:
+  portainerdata:
