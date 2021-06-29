@@ -16,6 +16,9 @@ services:
       
   productdb:
     image: mongo
+  
+  basketdb:
+    image: redis
 
   productapi:
     image: productapi
@@ -23,6 +26,12 @@ services:
       context: .
       dockerfile: ProductManagementApi/Dockerfile
   
+  basketapi:
+    image: basketapi
+    build:
+      context: .
+      dockerfile: BasketAPI/Dockerfile
+
 volumes:
   #rabbitmqdata:
   mongodata:
