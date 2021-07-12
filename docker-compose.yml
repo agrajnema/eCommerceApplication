@@ -20,6 +20,12 @@ services:
   basketdb:
     image: redis
   
+  discountdb:
+    image: postgres
+  
+  pgadmin:
+    image: dpage/pgadmin4
+
   portainer:
     image: portainer/portainer-ce
   productapi:
@@ -34,7 +40,15 @@ services:
       context: .
       dockerfile: BasketAPI/Dockerfile
 
+  discountapi:
+    image: ${DOCKER_REGISTRY-}discountapi
+    build:
+      context: .
+      dockerfile: DiscountAPI/Dockerfile
+
 volumes:
   #rabbitmqdata:
   mongodata:
   portainerdata:
+  postgresdata:
+  pgadmindata:
