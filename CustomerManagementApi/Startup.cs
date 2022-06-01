@@ -70,7 +70,7 @@ namespace CustomerManagementApi
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             //app.UseAuthorization();
             app.UseMvc();

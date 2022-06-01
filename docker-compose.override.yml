@@ -31,7 +31,7 @@ services:
     container_name: pgadmin
     environment:
       - PGADMIN_DEFAULT_EMAIL=test@test.com
-      - PGADMIN_DEFAULT_PASSWORD=admin12345
+      - PGADMIN_DEFAULT_PASSWORD=admin1234
     restart: always
     ports:
       - "5050:80"
@@ -63,6 +63,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - "CacheSettings:ConnectionString=basketdb:6379"
+      - "GrpcSettings:DiscountUrl=http://discount.grpc"
     ports:
       - "8001:80"
     depends_on:
@@ -77,3 +78,14 @@ services:
       - "8002:80"
     depends_on:
       - discountdb
+
+  discount.grpc:
+    container_name: discount.grpc
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - "DatabaseSettings:ConnectionString=Server=discountdb;Port=5432;Database=DiscountDb;User Id=admin;Password=admin1234;"
+    ports:
+      - "8003:80"
+    depends_on:
+      - discountdb
+
