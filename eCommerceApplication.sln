@@ -51,6 +51,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmailNotificationService", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eCommerceWebApp", "WebApp\eCommerceWebApp\eCommerceWebApp.csproj", "{13C2EABD-3FEE-4A79-A95C-9A8D9567A55B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderManagementApi.Clean.Infrastructure", "Order\OrderManagementApi.Clean.Infrastructure\OrderManagementApi.Clean.Infrastructure.csproj", "{E71F4B1D-4315-418A-B055-7B159C4E0218}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -113,6 +115,10 @@ Global
 		{13C2EABD-3FEE-4A79-A95C-9A8D9567A55B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{13C2EABD-3FEE-4A79-A95C-9A8D9567A55B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{13C2EABD-3FEE-4A79-A95C-9A8D9567A55B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E71F4B1D-4315-418A-B055-7B159C4E0218}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E71F4B1D-4315-418A-B055-7B159C4E0218}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E71F4B1D-4315-418A-B055-7B159C4E0218}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E71F4B1D-4315-418A-B055-7B159C4E0218}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -140,6 +146,7 @@ Global
 		{774D0829-C6ED-4751-AFD5-CC891F037245} = {F74E1220-7DE1-44A5-BFEC-D8599532B5E8}
 		{56B2E8D9-5B21-471C-81F1-5FD5CD675C9C} = {94E907A2-1A83-4ED5-A966-3F3BF850A055}
 		{13C2EABD-3FEE-4A79-A95C-9A8D9567A55B} = {8BAAE720-01D8-4E8E-96B7-9E7E19872D79}
+		{E71F4B1D-4315-418A-B055-7B159C4E0218} = {CC073E22-A1B4-45BD-9BA5-007A7C6EEFD1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1345D665-7C36-4E48-8835-D3AF04D9A2D9}
