@@ -32,25 +32,25 @@ services:
     image: productapi
     build:
       context: .
-      dockerfile: ProductManagementApi/Dockerfile
+      dockerfile: Product/ProductManagementApi/Dockerfile
   
   basketapi:
     image: basketapi
     build:
       context: .
-      dockerfile: BasketAPI/Dockerfile
+      dockerfile: Basket/BasketAPI/Dockerfile
 
   discountapi:
     image: ${DOCKER_REGISTRY-}discountapi
     build:
       context: .
-      dockerfile: DiscountAPI/Dockerfile
+      dockerfile: Discount/DiscountAPI/Dockerfile
 
   discount.grpc:
     image: ${DOCKER_REGISTRY-}discountgrpc
     build:
       context: .
-      dockerfile: Discount.Grpc/Dockerfile
+      dockerfile: Discount/Discount.Grpc/Dockerfile
 
 volumes:
   #rabbitmqdata:
