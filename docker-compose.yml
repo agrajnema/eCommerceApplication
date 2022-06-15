@@ -23,6 +23,9 @@ services:
   discountdb:
     image: postgres
   
+  orderdb:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+
   pgadmin:
     image: dpage/pgadmin4
 
@@ -52,10 +55,17 @@ services:
       context: .
       dockerfile: Discount/Discount.Grpc/Dockerfile
 
+  ordermanagementapi.clean.api:
+    image: ${DOCKER_REGISTRY-}ordermanagementapi
+    build:
+      context: .
+      dockerfile: Order/OrderManagementApi.Clean.Api/Dockerfile
+
 volumes:
   #rabbitmqdata:
   mongodata:
   portainerdata:
   postgresdata:
   pgadmindata:
+
 
