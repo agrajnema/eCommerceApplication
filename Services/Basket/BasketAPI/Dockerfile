@@ -6,10 +6,11 @@ EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
-COPY ["Basket/BasketAPI/BasketAPI.csproj", "Basket/BasketAPI/"]
-RUN dotnet restore "Basket/BasketAPI/BasketAPI.csproj"
+COPY ["Services/Basket/BasketAPI/BasketAPI.csproj", "Services/Basket/BasketAPI/"]
+COPY ["Infrastructure/InfrastructureLibrary/InfrastructureLibrary.csproj", "Infrastructure/InfrastructureLibrary/"]
+RUN dotnet restore "Services/Basket/BasketAPI/BasketAPI.csproj"
 COPY . .
-WORKDIR "/src/Basket/BasketAPI"
+WORKDIR "/src/Services/Basket/BasketAPI"
 RUN dotnet build "BasketAPI.csproj" -c Release -o /app/build
 
 FROM build AS publish

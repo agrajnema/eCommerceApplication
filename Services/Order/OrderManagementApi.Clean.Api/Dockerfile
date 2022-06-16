@@ -7,13 +7,13 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
-COPY ["Order/OrderManagementApi.Clean.Api/OrderManagementApi.Clean.Api.csproj", "Order/OrderManagementApi.Clean.Api/"]
-COPY ["Order/OrderManagementApi.Clean.Application/OrderManagementApi.Clean.Application.csproj", "Order/OrderManagementApi.Clean.Application/"]
-COPY ["Order/OrderManagementApi.Clean.Domain/OrderManagementApi.Clean.Domain.csproj", "Order/OrderManagementApi.Clean.Domain/"]
-COPY ["Order/OrderManagementApi.Clean.Infrastructure/OrderManagementApi.Clean.Infrastructure.csproj", "Order/OrderManagementApi.Clean.Infrastructure/"]
-RUN dotnet restore "Order/OrderManagementApi.Clean.Api/OrderManagementApi.Clean.Api.csproj"
+COPY ["Services/Order/OrderManagementApi.Clean.Api/OrderManagementApi.Clean.Api.csproj", "Services/Order/OrderManagementApi.Clean.Api/"]
+COPY ["Services/Order/OrderManagementApi.Clean.Application/OrderManagementApi.Clean.Application.csproj", "Services/Order/OrderManagementApi.Clean.Application/"]
+COPY ["Services/Order/OrderManagementApi.Clean.Domain/OrderManagementApi.Clean.Domain.csproj", "Services/Order/OrderManagementApi.Clean.Domain/"]
+COPY ["Services/Order/OrderManagementApi.Clean.Infrastructure/OrderManagementApi.Clean.Infrastructure.csproj", "Services/Order/OrderManagementApi.Clean.Infrastructure/"]
+RUN dotnet restore "Services/Order/OrderManagementApi.Clean.Api/OrderManagementApi.Clean.Api.csproj"
 COPY . .
-WORKDIR "/src/Order/OrderManagementApi.Clean.Api"
+WORKDIR "/src/Services/Order/OrderManagementApi.Clean.Api"
 RUN dotnet build "OrderManagementApi.Clean.Api.csproj" -c Release -o /app/build
 
 FROM build AS publish
