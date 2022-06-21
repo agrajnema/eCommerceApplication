@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="automapper.extensions.microsoft.dependencyinjection" Version="11.0.0" />
     <PackageReference Include="Grpc.AspNetCore" Version="2.32.0" />
     <PackageReference Include="MassTransit" Version="8.0.3" />
     <PackageReference Include="MassTransit.RabbitMQ" Version="8.0.3" />

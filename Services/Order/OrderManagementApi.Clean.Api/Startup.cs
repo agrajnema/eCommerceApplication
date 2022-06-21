@@ -1,3 +1,5 @@
+using InfrastructureLibrary.Common;
+using MassTransit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -7,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using OrderManagementApi.Clean.Api.EventBusConsumer;
 using OrderManagementApi.Clean.Application;
 using OrderManagementApi.Clean.Infrastructure;
 using System;
@@ -35,7 +38,21 @@ namespace OrderManagementApi.Clean.Api
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "OrderManagementApi.Clean.Api", Version = "v1" });
             });
-          }
+            services.AddMassTransit(c =>
+            {
+                c.AddConsumer<BasketCheckoutConsumer>();
+                c.UsingRabbitMq((context, configure) =>
+                {
+                    configure.Host(Configuration["EventBusSettings:HostAddress"]);
+                    configure.ReceiveEndpoint(EventBusConstants.BasketCheckoutQueue, c =>
+                    {
+                        c.ConfigureConsumer<BasketCheckoutConsumer>(context);
+                    });
+                });
+            });
+            services.AddAutoMapper(typeof(Startup));
+            services.AddScoped<BasketCheckoutConsumer>();
+        }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

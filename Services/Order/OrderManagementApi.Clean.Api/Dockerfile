@@ -3,11 +3,11 @@
 FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS base
 WORKDIR /app
 EXPOSE 80
-EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
 COPY ["Services/Order/OrderManagementApi.Clean.Api/OrderManagementApi.Clean.Api.csproj", "Services/Order/OrderManagementApi.Clean.Api/"]
+COPY ["Infrastructure/InfrastructureLibrary/InfrastructureLibrary.csproj", "Infrastructure/InfrastructureLibrary/"]
 COPY ["Services/Order/OrderManagementApi.Clean.Application/OrderManagementApi.Clean.Application.csproj", "Services/Order/OrderManagementApi.Clean.Application/"]
 COPY ["Services/Order/OrderManagementApi.Clean.Domain/OrderManagementApi.Clean.Domain.csproj", "Services/Order/OrderManagementApi.Clean.Domain/"]
 COPY ["Services/Order/OrderManagementApi.Clean.Infrastructure/OrderManagementApi.Clean.Infrastructure.csproj", "Services/Order/OrderManagementApi.Clean.Infrastructure/"]

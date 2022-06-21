@@ -19,7 +19,8 @@ namespace OrderManagementApi.Clean.Infrastructure
     {
         public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddDbContext<OrderContext>(options => options.UseSqlServer(configuration.GetConnectionString("OrderManagementApiConnectionString")));
+            var connectionString = Environment.GetEnvironmentVariable("ConnectionsString:OrderManagementApiConnectionString");
+            services.AddDbContext<OrderContext>(options => options.UseSqlServer(connectionString));
             services.AddScoped(typeof(IGenericAsyncRepository<>), typeof(BaseRepository<>));
             services.AddScoped<IOrderRepository, OrderRepository>();
             services.Configure<EmailSettings>(e => configuration.GetSection("EmailSettings"));

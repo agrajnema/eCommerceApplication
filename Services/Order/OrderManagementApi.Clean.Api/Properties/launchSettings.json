@@ -2,6 +2,10 @@
   "iisSettings": {
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
+    "iis": {
+      "applicationUrl": "http://localhost/OrderManagementApi.Clean.Api",
+      "sslPort": 0
+    },
     "iisExpress": {
       "applicationUrl": "http://localhost:48662",
       "sslPort": 44373

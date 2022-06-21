@@ -35,6 +35,7 @@ namespace BasketAPI
                 
             });
             services.AddScoped<IBasketRepository, BasketRepository>();
+            services.AddAutoMapper(typeof(Startup));
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -42,6 +43,7 @@ namespace BasketAPI
             });
             services.AddGrpcClient<DiscountProtoService.DiscountProtoServiceClient>(d => d.Address = new Uri(Configuration["GrpcSettings:DiscountUrl"]));
             services.AddScoped<DiscountGrpcService>();
+            
             services.AddMassTransit(c =>
             {
                 c.UsingRabbitMq((context, configure) =>

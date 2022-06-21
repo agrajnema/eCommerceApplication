@@ -30,11 +30,18 @@ services:
   orderdb:
     container_name: orderdb
     environment:
-      SA_PASSWORD: "P@ssword123"
-      ACCEPT_EULA: "Y"
+        SA_PASSWORD: "Pass!word123"
+        ACCEPT_EULA: "Y"
     restart: always
     ports:
-      - "1433:1433"
+        - "1433:1433"
+
+  rabbitmq:
+    container_name: rabbitmq
+    restart: always
+    ports:
+        - "5672:5672"
+        - "15672:15672"
 
   pgadmin:
     container_name: pgadmin
@@ -73,10 +80,12 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - "CacheSettings:ConnectionString=basketdb:6379"
       - "GrpcSettings:DiscountUrl=http://discount.grpc"
+      - "EventBusSettings:HostAddress=amqp://guest:guest@rabbitmq:5672"
     ports:
       - "8001:80"
     depends_on:
       - basketdb
+      - rabbitmq
 
   discountapi:
     container_name: discountapi
@@ -103,12 +112,13 @@ services:
     container_name: ordermanagementapi
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=https://+:443;http://+:80
-      - "ConnectionsString:OrderManagementApiConnectionString=Server=orderdb;Database=OrderDb;User Id=sa;Password=P@ssword123;"
+      - "ConnectionsString:OrderManagementApiConnectionString=Server=orderdb;Database=OrderDb;User Id=sa;Password=Pass!word123"
+      - "EventBusSettings:HostAddress=amqp://guest:guest@rabbitmq:5672"
     ports:
       - "8004:80"
     depends_on:
       - orderdb
+      - rabbitmq
 
   customermanagementapi:
     environment:
