@@ -2,8 +2,12 @@
   "iisSettings": {
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
+    "iis": {
+      "applicationUrl": "http://localhost/OcelotApiGateway",
+      "sslPort": 0
+    },
     "iisExpress": {
-      "applicationUrl": "http://localhost:61619",
+      "applicationUrl": "http://localhost:5010",
       "sslPort": 44396
     }
   },
@@ -12,7 +16,7 @@
       "commandName": "IISExpress",
       "launchBrowser": true,
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "local"
       }
     },
     "OcelotApiGateway": {
@@ -21,7 +25,7 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "http://localhost:61619"
+      "applicationUrl": "http://localhost:5010"
     },
     "Docker": {
       "commandName": "Docker",

@@ -8,7 +8,7 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
 COPY ["ApiGateway/OcelotApiGateway/OcelotApiGateway.csproj", "ApiGateway/OcelotApiGateway/"]
-COPY ["InfrastructureLibrary/InfrastructureLibrary.csproj", "InfrastructureLibrary/"]
+COPY ["Infrastructure/InfrastructureLibrary/InfrastructureLibrary.csproj", "Infrastructure/InfrastructureLibrary/"]
 RUN dotnet restore "ApiGateway/OcelotApiGateway/OcelotApiGateway.csproj"
 COPY . .
 WORKDIR "/src/ApiGateway/OcelotApiGateway"

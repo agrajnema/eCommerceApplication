@@ -73,12 +73,19 @@ services:
       context: .
       dockerfile: Services/NotificationService/EmailNotificationService/Dockerfile
 
+  ocelotapigateway:
+    image: ${DOCKER_REGISTRY-}ocelotapigateway
+    build:
+      context: .
+      dockerfile: ApiGateway/OcelotApiGateway/Dockerfile
+
 volumes:
   #rabbitmqdata:
   mongodata:
   portainerdata:
   postgresdata:
   pgadmindata:
+
 
 
 

@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Ocelot.Middleware;
 using Ocelot.DependencyInjection;
+using Ocelot.Cache.CacheManager;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.Extensions.Configuration;
@@ -49,12 +50,12 @@ namespace OcelotApiGateway
            //     auth.TokenValidationParameters = tokenValidationParameters;
            // });
 
-            services.AddOcelot();
+            services.AddOcelot().AddCacheManager(c=> { c.WithDictionaryHandle(); });
 
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public async void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -62,7 +63,7 @@ namespace OcelotApiGateway
             }
             //app.UseAuthentication();
             app.UseMvc();
-            app.UseOcelot().Wait();
+            await app.UseOcelot();
         }
     }
 }
