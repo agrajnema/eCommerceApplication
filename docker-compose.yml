@@ -3,105 +3,111 @@ version: '3.4'
 services:
 
   rabbitmq:
-    image: rabbitmq:latest
-    container_name: rabbitmq
-    volumes:
-      - rabbitmqdata:/var/lib/rabbitmq
-    ports:
-      - "15672:15672"
-      - "5672:5672"
-    environment:
-      - RABBITMQ_DEFAULT_USER=guest
-      - RABBITMQ_DEFAULT_PASS=guest
+    image: rabbitmq:3-management-alpine
+  #  container_name: rabbitmq
+  #  volumes:
+  #    - rabbitmqdata:/var/lib/rabbitmq
+  #  ports:
+  #    - "15672:15672"
+  #    - "5672:5672"
+  #  environment:
+  #    - RABBITMQ_DEFAULT_USER=guest
+  #    - RABBITMQ_DEFAULT_PASS=guest
+      
+  productdb:
+    image: mongo
+  
+  basketdb:
+    image: redis
+  
+  discountdb:
+    image: postgres
+  
+  orderdb:
+    image: mcr.microsoft.com/mssql/server:2017-latest
 
-  ms-sql-server:
-    image: 'mcr.microsoft.com/mssql/server:2017-latest-ubuntu'
-    container_name: ms-sql-server
-    volumes:
-      - sqlserverdata:/var/opt/mssql 
-    environment:
-      ACCEPT_EULA: "Y"
-      SA_PASSWORD: "Password@123"
-      MSSQL_PID: Express
-    ports:
-      - "1433:1433"
-  
-  mail:
-    image: djfarrelly/maildev
-    container_name: mail
-    ports:
-      - "25:25"
-      - "4000:80"
-  
-  emailnotificationservice:
-    container_name: emailnotificationservice
-    image: emailnotificationservice
+  pgadmin:
+    image: dpage/pgadmin4
+
+  portainer:
+    image: portainer/portainer-ce
+  productapi:
+    image: productapi
     build:
       context: .
-      dockerfile: EmailNotificationService/Dockerfile
-    depends_on:
-      - rabbitmq
-      - mail
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      dockerfile: Services/Product/ProductManagementApi/Dockerfile
+  
+  basketapi:
+    image: basketapi
+    build:
+      context: .
+      dockerfile: Services/Basket/BasketAPI/Dockerfile
+
+  discountapi:
+    image: ${DOCKER_REGISTRY-}discountapi
+    build:
+      context: .
+      dockerfile: Services/Discount/DiscountAPI/Dockerfile
+
+  discount.grpc:
+    image: ${DOCKER_REGISTRY-}discountgrpc
+    build:
+      context: .
+      dockerfile: Services/Discount/Discount.Grpc/Dockerfile
+
+  ordermanagementapi.clean.api:
+    image: ${DOCKER_REGISTRY-}ordermanagementapi
+    build:
+      context: .
+      dockerfile: Services/Order/OrderManagementApi.Clean.Api/Dockerfile
+
+  customermanagementapi:
+    image: ${DOCKER_REGISTRY-}customermanagementapi
+    build:
+      context: .
+      dockerfile: Services/Customer/CustomerManagementApi/Dockerfile
+
+  emailnotificationservice:
+    image: ${DOCKER_REGISTRY-}emailnotificationservice
+    build:
+      context: .
+      dockerfile: Services/NotificationService/EmailNotificationService/Dockerfile
 
   ocelotapigateway:
-    container_name: ocelotapigateway
-    image: ocelotapigateway
+    image: ${DOCKER_REGISTRY-}ocelotapigateway
     build:
       context: .
-      dockerfile: OcelotApiGateway/Dockerfile
-    ports:
-      - "7100:80"
-    depends_on:
-      - productmanagementapi
-      - customermanagementapi
+      dockerfile: ApiGateway/OcelotApiGateway/Dockerfile
 
-  productmanagementapi:
-    container_name: productmanagementapi
-    image: productmanagementapi
+  shopping.aggregator:
+    image: ${DOCKER_REGISTRY-}shoppingaggregator
     build:
       context: .
-      dockerfile: ProductManagementApi/Dockerfile
-    environment:
-      - DBServer=ms-sql-server
-      - ASPNETCORE_ENVIRONMENT=Development
-    ports:
-      - "8030:80"
-    depends_on:
-      - rabbitmq
-      - ms-sql-server
-  
-  customermanagementapi:
-    container_name: customermanagementapi
-    image: customermanagementapi
+      dockerfile: ApiGateway/Shopping.Aggregator/Dockerfile
+
+  webapp:
+    image: ${DOCKER_REGISTRY-}webapp
     build:
       context: .
-      dockerfile: CustomerManagementApi/Dockerfile
-    environment:
-      - DBServer=ms-sql-server
-      - ASPNETCORE_ENVIRONMENT=Development
-    ports:
-      - "8020:80"
-    depends_on:
-      - rabbitmq
-      - ms-sql-server
+      dockerfile: WebApp/WebApp/Dockerfile
 
   ecommercewebapp:
-    container_name: ecommercewebapp
     image: ${DOCKER_REGISTRY-}ecommercewebapp
     build:
       context: .
-      dockerfile: eCommerceWebApp/Dockerfile
-    depends_on:
-      - productmanagementapi
-      - customermanagementapi
-      - ocelotapigateway
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - "ApiAddress:OcelotApiGateway=ocelotapigateway"
-    ports:
-      - "8040:80"
+      dockerfile: WebApp/eCommerceWeb/Dockerfile
+
 volumes:
-  rabbitmqdata:
-  sqlserverdata:
+  #rabbitmqdata:
+  mongodata:
+  portainerdata:
+  postgresdata:
+  pgadmindata:
+
+
+
+
+
+
+
+

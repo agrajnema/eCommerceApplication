@@ -1,1 +1,181 @@
 version: '3.4'
+
+services:
+  productdb:
+    container_name: productdb
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodata:/data/db
+
+  basketdb:
+    container_name: basketdb
+    restart: always
+    ports:
+      - "6379:6379"
+
+  discountdb:
+    container_name: discountdb
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin1234
+      - POSTGRES_DB=DiscountDb
+    volumes:
+      - postgresdata:/var/lib/postgresql/data/
+  
+  orderdb:
+    container_name: orderdb
+    environment:
+        SA_PASSWORD: "Pass!word123"
+        ACCEPT_EULA: "Y"
+    restart: always
+    ports:
+        - "1433:1433"
+
+  rabbitmq:
+    container_name: rabbitmq
+    restart: always
+    ports:
+        - "5672:5672"
+        - "15672:15672"
+
+  pgadmin:
+    container_name: pgadmin
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=test@test.com
+      - PGADMIN_DEFAULT_PASSWORD=admin1234
+    restart: always
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadmindata:/root/.pgadmin
+
+  portainer:
+    container_name: portainer
+    restart: always
+    ports:
+      - "8080:8000"
+      - "9000:9000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainerdata:/data
+
+  productapi:
+    container_name: productapi
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - "DatabaseSettings:ConnectionString=mongodb://productdb:27017"
+    ports:
+      - "8000:80"
+    depends_on:
+      - productdb
+
+  basketapi:
+    container_name: basketapi
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - "CacheSettings:ConnectionString=basketdb:6379"
+      - "GrpcSettings:DiscountUrl=http://discount.grpc"
+      - "EventBusSettings:HostAddress=amqp://guest:guest@rabbitmq:5672"
+    ports:
+      - "8001:80"
+    depends_on:
+      - basketdb
+      - rabbitmq
+
+  discountapi:
+    container_name: discountapi
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - "DatabaseSettings:ConnectionString=Server=discountdb;Port=5432;Database=DiscountDb;User Id=admin;Password=admin1234;"
+    ports:
+      - "8002:80"
+    depends_on:
+      - discountdb
+
+  discount.grpc:
+    container_name: discount.grpc
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - "DatabaseSettings:ConnectionString=Server=discountdb;Port=5432;Database=DiscountDb;User Id=admin;Password=admin1234;"
+    ports:
+      - "8003:80"
+    depends_on:
+      - discountdb
+
+
+  ordermanagementapi.clean.api:
+    container_name: ordermanagementapi
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - "ConnectionsString:OrderManagementApiConnectionString=Server=orderdb;Database=OrderDb;User Id=sa;Password=Pass!word123"
+      - "EventBusSettings:HostAddress=amqp://guest:guest@rabbitmq:5672"
+    ports:
+      - "8004:80"
+    depends_on:
+      - orderdb
+      - rabbitmq
+
+  customermanagementapi:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+    ports:
+      - "80"
+      - "443"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+
+  ocelotapigateway:
+    container_name: ocelotapigateway
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "8010:80"
+    depends_on:
+      - productapi
+      - discountapi
+      - basketapi
+      - ordermanagementapi.clean.api
+
+  shopping.aggregator:
+    container_name: shopping.aggregator
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - "ApiSettings:ProductUrl=http://productapi"
+      - "ApiSettings:BasketUrl=http://basketapi"
+      - "ApiSettings:OrderUrl=http://ordermanagementapi.clean.api"
+    depends_on:
+      - productapi
+      - basketapi
+      - ordermanagementapi.clean.api
+    ports:
+      - "8005:80"
+
+
+  webapp:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+    ports:
+      - "80"
+      - "443"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+
+  ecommercewebapp:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+    ports:
+      - "80"
+      - "443"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
