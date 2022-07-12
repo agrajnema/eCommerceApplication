@@ -79,12 +79,33 @@ services:
       context: .
       dockerfile: ApiGateway/OcelotApiGateway/Dockerfile
 
+  shopping.aggregator:
+    image: ${DOCKER_REGISTRY-}shoppingaggregator
+    build:
+      context: .
+      dockerfile: ApiGateway/Shopping.Aggregator/Dockerfile
+
+  webapp:
+    image: ${DOCKER_REGISTRY-}webapp
+    build:
+      context: .
+      dockerfile: WebApp/WebApp/Dockerfile
+
+  ecommercewebapp:
+    image: ${DOCKER_REGISTRY-}ecommercewebapp
+    build:
+      context: .
+      dockerfile: WebApp/eCommerceWeb/Dockerfile
+
 volumes:
   #rabbitmqdata:
   mongodata:
   portainerdata:
   postgresdata:
   pgadmindata:
+
+
+
 
 
 

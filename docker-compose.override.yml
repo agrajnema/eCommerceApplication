@@ -142,3 +142,40 @@ services:
       - discountapi
       - basketapi
       - ordermanagementapi.clean.api
+
+  shopping.aggregator:
+    container_name: shopping.aggregator
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - "ApiSettings:ProductUrl=http://productapi"
+      - "ApiSettings:BasketUrl=http://basketapi"
+      - "ApiSettings:OrderUrl=http://ordermanagementapi.clean.api"
+    depends_on:
+      - productapi
+      - basketapi
+      - ordermanagementapi.clean.api
+    ports:
+      - "8005:80"
+
+
+  webapp:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+    ports:
+      - "80"
+      - "443"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+
+  ecommercewebapp:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+    ports:
+      - "80"
+      - "443"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
